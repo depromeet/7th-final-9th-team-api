@@ -4,9 +4,6 @@ import com.depromeet.todo.domain.location.GcsLocation;
 import com.depromeet.todo.domain.location.PcsLocation;
 import com.depromeet.todo.domain.weather.Weather;
 import com.depromeet.todo.domain.weather.WeatherService;
-import com.depromeet.todo.infrastructure.kma.CurrentKmaApiWeatherItem;
-import com.depromeet.todo.infrastructure.kma.KmaApiResult;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,13 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class KmaWeatherServiceIntegrationTest {
     @Autowired
     private WeatherService KmaWeatherService;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void 초단기실황조회_pcs_좌표() {
         // given
-        KmaApiResult<CurrentKmaApiWeatherItem> apiResult = new KmaApiResult<>();
         // when
         Weather weather = KmaWeatherService.getCurrentWeather(PcsLocation.of(63, 127), LocalDateTime.now());
         // then
