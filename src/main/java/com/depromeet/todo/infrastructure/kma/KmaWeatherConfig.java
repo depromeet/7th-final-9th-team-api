@@ -38,7 +38,7 @@ public class KmaWeatherConfig {
     public RestTemplate kmaRestTemplate() {
         return new RestTemplateBuilder()
                 .setConnectTimeout(Duration.ofMillis(connectTimeoutMillis))
-                .setReadTimeout(Duration.ofSeconds(readTimeoutMillis))
+                .setReadTimeout(Duration.ofMillis(readTimeoutMillis))
                 .additionalInterceptors(
                         this.serviceKeyInjectionInterceptor()
                 )
