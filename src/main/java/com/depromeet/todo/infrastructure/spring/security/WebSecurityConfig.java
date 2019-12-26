@@ -1,5 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
+import com.depromeet.todo.application.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -7,7 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -16,15 +19,20 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.Collections;
+
 @ConditionalOnWebApplication
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper readObjectMapper;
     private final ObjectMapper writeObjectMapper;
+    private final TokenService<Long> tokenService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,9 +41,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.POST, "/api/members/login").permitAll()
                 .anyRequest().authenticated();
 
+        http.formLogin().disable();
+        http.httpBasic().disable();
+
         http.logout()
                 .logoutSuccessHandler(this.jsonLogoutSuccessHandler())
                 .logoutRequestMatcher(new AntPathRequestMatcher("/api/members/logout", HttpMethod.POST.name()));
+
+        http.addFilterAt(this.todoPreAuthenticatedProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 
         http.addFilterBefore(this.httpPostAuthenticationProcessingFilter(), BasicAuthenticationFilter.class);
 
@@ -44,9 +57,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(this.jsonAccessDeniedHandler());
 
         // TODO: token 발급 기능 추가되면 session 비활성화시켜야함
-//        http.sessionManagement().disable();
+        http.sessionManagement().disable();
 
         http.csrf().disable();
+    }
+
+    @Bean
+    public AbstractPreAuthenticatedProcessingFilter todoPreAuthenticatedProcessingFilter() {
+        AbstractPreAuthenticatedProcessingFilter filter = new TodoPreAuthenticatedProcessingFilter(tokenService);
+        filter.setAuthenticationManager(new ProviderManager(Collections.singletonList(preAuthTokenAuthenticationProvider())));
+        return filter;
     }
 
     @Bean
@@ -56,12 +76,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.POST,
                 readObjectMapper
         );
-        filter.setAuthenticationManager(
-                this.httpBodyAuthenticationProvider()::authenticate
-        );
+        filter.setAuthenticationManager(new ProviderManager(Collections.singletonList(httpBodyAuthenticationProvider())));
         filter.setAuthenticationSuccessHandler(this.jsonAuthenticationSuccessHandler());
         filter.setAuthenticationFailureHandler(this.jsonAuthenticationFailureHandler());
         return filter;
+    }
+
+    @Bean
+    public PreAuthTokenAuthenticationProvider preAuthTokenAuthenticationProvider() {
+        return new PreAuthTokenAuthenticationProvider(tokenService);
     }
 
     @Bean
@@ -77,28 +100,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new TodoUserDetailsService();
     }
 
-    @Bean
-    public AuthenticationSuccessHandler jsonAuthenticationSuccessHandler() {
+    private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler() {
         return new JsonAuthenticationSuccessHandler(writeObjectMapper);
     }
 
-    @Bean
-    public AuthenticationFailureHandler jsonAuthenticationFailureHandler() {
+    private AuthenticationFailureHandler jsonAuthenticationFailureHandler() {
         return new JsonAuthenticationFailureHandler(writeObjectMapper);
     }
 
-    @Bean
-    public LogoutSuccessHandler jsonLogoutSuccessHandler() {
+    private LogoutSuccessHandler jsonLogoutSuccessHandler() {
         return new JsonLogoutSuccessHandler(writeObjectMapper);
     }
 
-    @Bean
-    public AuthenticationEntryPoint jsonAuthenticationEntryPoint() {
+    private AuthenticationEntryPoint jsonAuthenticationEntryPoint() {
         return new JsonAuthenticationEntryPoint(writeObjectMapper);
     }
 
-    @Bean
-    public AccessDeniedHandler jsonAccessDeniedHandler() {
+    private AccessDeniedHandler jsonAccessDeniedHandler() {
         return new JsonAccessDeniedHandler(writeObjectMapper);
     }
 }

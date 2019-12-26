@@ -21,14 +21,12 @@ public class HttpBodyAuthenticationProvider implements AuthenticationProvider {
         KakaoAuthenticationToken token = (KakaoAuthenticationToken) authentication;
         String kakaoAccessToken = token.getKakaoAccessToken();
         if (StringUtils.isEmpty(kakaoAccessToken)) {
-            throw new BadCredentialsException("invalid kakaoAccessToken");
+            throw new BadCredentialsException("'kakaoAccessToken' must not be null or empty");
         }
 
         UserDetails userDetails = todoUserDetailsService.loadUserByUsername(kakaoAccessToken);
-        token.setPrincipal(userDetails.getUsername());
-        token.setUserId(Integer.parseInt(userDetails.getUsername()));
-        token.setAuthenticated(true);
-        return token;
+        MemberIdContainer memberIdContainer = (MemberIdContainer) userDetails;
+        return new TodoAuthenticationToken(memberIdContainer.getMemberId(), kakaoAccessToken);
     }
 
     @Override

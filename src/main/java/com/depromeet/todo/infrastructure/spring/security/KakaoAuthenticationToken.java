@@ -10,11 +10,8 @@ import java.util.Collections;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class KakaoAuthenticationToken extends AbstractAuthenticationToken {
-    private static final String EMPTY_CREDENTIALS = "";
 
     private final String kakaoAccessToken;
-    private String principal;
-    private Integer userId;
 
     public KakaoAuthenticationToken(String kakaoAccessToken) {
         super(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
@@ -22,28 +19,16 @@ public class KakaoAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     public String getKakaoAccessToken() {
-        return kakaoAccessToken;
+        return this.getPrincipal();
     }
 
     @Override
-    public String getCredentials() {
-        return EMPTY_CREDENTIALS;
+    public Object getCredentials() {
+        return null;
     }
 
     @Override
     public String getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(String principal) {
-        this.principal = principal;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+        return kakaoAccessToken;
     }
 }
