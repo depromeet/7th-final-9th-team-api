@@ -1,4 +1,4 @@
-package com.depromeet.todo.coordinate;
+package com.depromeet.todo.domain.location;
 
 class LegacyCoordinateConverter {
 

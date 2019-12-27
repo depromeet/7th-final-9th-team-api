@@ -1,4 +1,4 @@
-package com.depromeet.todo.coordinate;
+package com.depromeet.todo.domain.location;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +18,9 @@ class CoordinateConverterTest {
 
     private void testToPcsLocation(double latitude, double longitude, int x, int y) {
         // given
-        LcsLocation lcsLocation = LcsLocation.of(latitude, longitude);
+        GcsLocation gcsLocation = GcsLocation.of(latitude, longitude);
         // when
-        PcsLocation pcsLocation = CoordinateConverter.toPcsLocation(lcsLocation);
+        PcsLocation pcsLocation = CoordinateConverter.toPcsLocation(gcsLocation);
         // then 1
         assertThat(pcsLocation.getX()).isEqualTo(x);
         assertThat(pcsLocation.getY()).isEqualTo(y);

@@ -1,4 +1,4 @@
-package com.depromeet.todo.coordinate;
+package com.depromeet.todo.domain.location;
 
 import org.springframework.util.Assert;
 
@@ -37,11 +37,11 @@ public class CoordinateConverter {
         // Noninstantiable utility class
     }
 
-    public static PcsLocation toPcsLocation(LcsLocation lcsLocation) {
-        Assert.notNull(lcsLocation, "'lcsLocation' must not be null");
+    public static PcsLocation toPcsLocation(GcsLocation gcsLocation) {
+        Assert.notNull(gcsLocation, "'lcsLocation' must not be null");
 
-        double latitude = lcsLocation.getLatitude();
-        double longitude = lcsLocation.getLongitude();
+        double latitude = gcsLocation.getLatitude();
+        double longitude = gcsLocation.getLongitude();
 
         double ra = Math.tan(Math.PI * 0.25 + (latitude) * DEGRAD * 0.5);
         ra = NUMBER_OF_GRID * sf / Math.pow(ra, sn);
