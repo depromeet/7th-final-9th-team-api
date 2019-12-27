@@ -13,8 +13,4 @@ public class KmaApiHeader {
     private String resultCode;
     @JsonProperty("resultMsg")
     private String resultMessage;
-
-    public static KmaApiHeader success() {
-        return new KmaApiHeader("0000", "OK");
-    }
 }
