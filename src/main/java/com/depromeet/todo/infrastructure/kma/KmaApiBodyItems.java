@@ -13,7 +13,7 @@ public class KmaApiBodyItems<T extends KmaApiWeatherItem> {
     @JsonProperty("item")
     private List<T> itemList;
 
-    // XXX: items: "" 로 들어오는 경우에 대한 방어코드
+    @SuppressWarnings("squid:S1172")    // XXX: items: "" 로 들어오는 경우에 대한 방어코드
     public KmaApiBodyItems(String input) {
         this.itemList = Collections.emptyList();
     }
