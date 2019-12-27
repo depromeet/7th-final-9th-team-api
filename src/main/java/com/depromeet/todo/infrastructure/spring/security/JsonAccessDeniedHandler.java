@@ -22,7 +22,9 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        // TODO: 공통 응답 모듈 머지되면 responseBody 수정하기
-        writeObjectMapper.writeValue(response.getOutputStream(), "");
+        writeObjectMapper.writeValue(
+                response.getOutputStream(),
+                accessDeniedException.getMessage()
+        );
     }
 }

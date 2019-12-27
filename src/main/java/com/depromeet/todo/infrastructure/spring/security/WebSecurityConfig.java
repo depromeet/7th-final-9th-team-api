@@ -115,7 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private LogoutSuccessHandler jsonLogoutSuccessHandler() {
-        return new JsonLogoutSuccessHandler(writeObjectMapper);
+        return new JsonLogoutSuccessHandler();
     }
 
     private AuthenticationEntryPoint jsonAuthenticationEntryPoint() {
