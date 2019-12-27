@@ -3,11 +3,11 @@ package com.depromeet.todo.infrastructure.util;
 import com.depromeet.todo.domain.IdGenerator;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class SnowFlakeIdGenerator implements IdGenerator {
-    private static final Random RANDOM = new Random();
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     // starts at  2019.12.25.
     private static final long START_EPOCH_MILLIS = 1577232000000L;
     // left shift amounts
