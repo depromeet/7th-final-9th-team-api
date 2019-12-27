@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class HttpPostAuthenticationProcessingFilter extends AbstractAuthenticati
      * @throws AuthenticationException if authentication fails.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         MediaType mediaType = this.resolveMediaType(request);
         if (!MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
             return null;
