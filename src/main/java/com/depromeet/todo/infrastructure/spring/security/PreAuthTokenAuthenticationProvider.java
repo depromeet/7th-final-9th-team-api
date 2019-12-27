@@ -1,6 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.TokenService;
+import com.depromeet.todo.application.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.depromeet.todo.application;
+package com.depromeet.todo.application.security;
 
 public interface TokenService<T> {
     String generate(T memberId);

@@ -1,6 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.TokenService;
+import com.depromeet.todo.application.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
