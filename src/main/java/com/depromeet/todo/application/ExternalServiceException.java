@@ -1,5 +1,8 @@
 package com.depromeet.todo.application;
 
+/**
+ * 외부 연동 서버가 정상 동작하지 않는 경우 발생하는 exception
+ */
 public class ExternalServiceException extends RuntimeException {
     public ExternalServiceException() {
     }

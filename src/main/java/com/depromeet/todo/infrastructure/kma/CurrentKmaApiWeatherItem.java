@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 초단기실황조회 API 응답 모델
+ */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CurrentKmaApiWeatherItem implements KmaApiWeatherItem {

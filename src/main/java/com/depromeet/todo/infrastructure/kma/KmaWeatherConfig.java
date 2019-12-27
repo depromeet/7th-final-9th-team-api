@@ -56,6 +56,9 @@ public class KmaWeatherConfig {
         };
     }
 
+    /**
+     * HttpRequest 클래스의 uri 값을 변경하기 위한 wrapper class
+     */
     private static class RequestWrapper implements HttpRequest {
         private final HttpRequest original;
         private final URI newUriWithParam;
