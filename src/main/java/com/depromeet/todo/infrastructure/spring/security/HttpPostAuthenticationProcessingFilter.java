@@ -47,7 +47,7 @@ public class HttpPostAuthenticationProcessingFilter extends AbstractAuthenticati
      * @throws AuthenticationException if authentication fails.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         MediaType mediaType = this.resolveMediaType(request);
         if (!MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
             return null;

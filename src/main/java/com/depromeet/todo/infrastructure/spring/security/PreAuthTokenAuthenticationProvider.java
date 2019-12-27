@@ -4,7 +4,6 @@ import com.depromeet.todo.application.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.util.Optional;
@@ -14,7 +13,7 @@ public class PreAuthTokenAuthenticationProvider implements AuthenticationProvide
     private final TokenService<Long> tokenService;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
         if (!this.supports(authentication.getClass())) {
             return null;
         }
