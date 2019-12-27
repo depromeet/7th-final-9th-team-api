@@ -67,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AbstractPreAuthenticatedProcessingFilter todoPreAuthenticatedProcessingFilter() {
-        AbstractPreAuthenticatedProcessingFilter filter = new TodoPreAuthenticatedProcessingFilter(tokenService);
+        AbstractPreAuthenticatedProcessingFilter filter = new TodoPreAuthenticatedProcessingFilter();
         filter.setAuthenticationManager(new ProviderManager(Collections.singletonList(preAuthTokenAuthenticationProvider())));
         return filter;
     }

@@ -1,7 +1,9 @@
 package com.depromeet.todo.application.security;
 
+import java.util.Optional;
+
 public interface TokenService<T> {
     String generate(T memberId);
 
-    T decode(String token);
+    Optional<T> decode(String token);
 }

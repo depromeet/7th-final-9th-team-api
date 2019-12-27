@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class PreAuthTokenAuthenticationProvider implements AuthenticationProvider {
     private final TokenService<Long> tokenService;
@@ -22,8 +24,14 @@ public class PreAuthTokenAuthenticationProvider implements AuthenticationProvide
             return null;
         }
         String accessToken = (String) principal;
-        Long memberId = tokenService.decode(accessToken);
-        TodoAuthenticationToken todoAuthenticationToken = new TodoAuthenticationToken(memberId, accessToken);
+        Optional<Long> memberIdOptional = tokenService.decode(accessToken);
+        if (!memberIdOptional.isPresent()) {
+            return null;
+        }
+        TodoAuthenticationToken todoAuthenticationToken = new TodoAuthenticationToken(
+                memberIdOptional.get(),
+                accessToken
+        );
         todoAuthenticationToken.setAuthenticated(true);
         return todoAuthenticationToken;
     }
