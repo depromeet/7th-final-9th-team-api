@@ -37,15 +37,17 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Member of(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
+    private Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
         Assert.notNull(idGenerator, "'idGenerator' must not be null");
+        Assert.notNull(oAuthUserInfo, "'oAuthUserInfo' must not be null");
 
-        Member member = new Member();
-        member.memberId = idGenerator.generate();
-        member.oauthUserInfo = oAuthUserInfo;
+        this.memberId = idGenerator.generate();
+        this.oauthUserInfo = oAuthUserInfo;
+        this.validate();
+    }
 
-        member.validate();
-        return member;
+    public static Member of(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
+        return new Member(idGenerator, oAuthUserInfo);
     }
 
     private void validate() {
