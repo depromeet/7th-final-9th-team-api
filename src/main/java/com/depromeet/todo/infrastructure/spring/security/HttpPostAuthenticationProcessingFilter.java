@@ -2,7 +2,9 @@ package com.depromeet.todo.infrastructure.spring.security;
 
 import com.depromeet.todo.presentation.member.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 public class HttpPostAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
     private final ObjectMapper readObjectMapper;
 
@@ -45,10 +48,11 @@ public class HttpPostAuthenticationProcessingFilter extends AbstractAuthenticati
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (!MediaType.APPLICATION_JSON.isCompatibleWith(MediaType.valueOf(request.getContentType()))) {
+        MediaType mediaType = this.resolveMediaType(request);
+        if (!MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
             return null;
         }
-        LoginRequest loginRequest = readObjectMapper.readValue(request.getInputStream(), LoginRequest.class);
+        LoginRequest loginRequest = this.resolvePayload(request);
 
         String kakaoAccessToken = Optional.ofNullable(loginRequest)
                 .map(LoginRequest::getAccessToken)
@@ -56,23 +60,28 @@ public class HttpPostAuthenticationProcessingFilter extends AbstractAuthenticati
                 .orElse("");
 
         AbstractAuthenticationToken authRequest = new KakaoAuthenticationToken(kakaoAccessToken);
-
-        // Allow subclasses to set the "details" property
-        setDetails(request, authRequest);
-
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
-    /**
-     * Provided so that subclasses may configure what is put into the authentication
-     * request's details property.
-     *
-     * @param request     that an authentication request is being created for
-     * @param authRequest the authentication request object that should have its details
-     *                    set
-     */
-    private void setDetails(HttpServletRequest request,
-                            AbstractAuthenticationToken authRequest) {
-        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+    private MediaType resolveMediaType(HttpServletRequest request) {
+        String contentType = request.getContentType();
+        if (contentType == null) {
+            return null;
+        }
+        try {
+            return MediaType.valueOf(contentType);
+        } catch (InvalidMediaTypeException ex) {
+            log.warn("Failed to resolve mediaType. contentType: {}", contentType, ex);
+            return null;
+        }
+    }
+
+    private LoginRequest resolvePayload(HttpServletRequest request) {
+        try {
+            return readObjectMapper.readValue(request.getInputStream(), LoginRequest.class);
+        } catch (IOException ex) {
+            log.warn("Failed to parse login request body.", ex);
+            return null;
+        }
     }
 }
