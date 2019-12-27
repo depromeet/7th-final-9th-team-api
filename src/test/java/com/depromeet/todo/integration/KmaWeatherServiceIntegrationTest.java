@@ -4,7 +4,7 @@ import com.depromeet.todo.domain.location.GcsLocation;
 import com.depromeet.todo.domain.location.PcsLocation;
 import com.depromeet.todo.domain.weather.Weather;
 import com.depromeet.todo.domain.weather.WeatherService;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore // 직접 기상청 api 를 호출하는 테스트이므로, 평소에는 ignore 해둡니다
+@Disabled // 직접 기상청 api 를 호출하는 테스트이므로, 평소에는 disabled 해둡니다
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
 class KmaWeatherServiceIntegrationTest {

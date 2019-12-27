@@ -4,7 +4,7 @@ import com.depromeet.todo.domain.member.oauth.OAuthAccessToken;
 import com.depromeet.todo.domain.member.oauth.OAuthCredential;
 import com.depromeet.todo.domain.member.oauth.OAuthService;
 import com.depromeet.todo.domain.member.oauth.OAuthUserInfo;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +17,7 @@ class KakaoUserServiceTest {
     @Autowired
     private OAuthService KakaoUserService;
 
-    @Ignore // kakao api 를 직접 호출하는 테스트이므로, 평소에는 ignore 합니다
+    @Disabled // kakao api 를 직접 호출하는 테스트이므로, 평소에는 disabled 합니다
     @Test
     void kakao_멤버_정보_api_가_잘_동작하는지() {
         // given
