@@ -11,10 +11,7 @@ public class MockTokenService implements TokenService<Long> {
 
     @Override
     public Long decode(String token) {
-        if (token == null) {
-            return null;
-        }
-        if (token.equals("todoAccessToken")) {
+        if ("todoAccessToken".equals(token)) {
             return 2L;
         }
         return null;
