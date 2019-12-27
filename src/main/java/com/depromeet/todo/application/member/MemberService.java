@@ -1,5 +1,7 @@
 package com.depromeet.todo.application.member;
 
+import com.depromeet.todo.application.BadRequestException;
+import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.member.MemberRepository;
@@ -30,5 +32,13 @@ public class MemberService {
                     Member member = Member.of(snowFlakeIdGenerator, oAuthUserInfo);
                     return memberRepository.save(member);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMember(Long memberId) {
+        BadRequestException.nonNull(memberId, "'memberId' must not be null");
+
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found. memberId:" + memberId));
     }
 }
