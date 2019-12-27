@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,20 +21,14 @@ public class JwtService implements TokenService<Long> {
     private static final String CLAIM_NAME_MEMBER_ID = "memberId";
 
     private final String tokenIssuer;
-    private final String tokenSigningKey;
-    private Algorithm algorithm;
-    private JWTVerifier jwtVerifier;
+    private final Algorithm algorithm;
+    private final JWTVerifier jwtVerifier;
 
     public JwtService(@Value("${jwt.token-issuer}") String tokenIssuer,
                       @Value("${jwt.token-signing-key}") String tokenSigningKey) {
         this.tokenIssuer = tokenIssuer;
-        this.tokenSigningKey = tokenSigningKey;
-    }
-
-    @PostConstruct
-    public void init() {
-        algorithm = Algorithm.HMAC256(tokenSigningKey);
-        jwtVerifier = JWT.require(algorithm).build();
+        this.algorithm = Algorithm.HMAC256(tokenSigningKey);
+        this.jwtVerifier = JWT.require(algorithm).build();
     }
 
     @Override
