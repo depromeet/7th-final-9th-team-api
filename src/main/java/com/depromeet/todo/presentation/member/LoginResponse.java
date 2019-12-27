@@ -1,4 +1,4 @@
-package com.depromeet.todo.infrastructure.spring.security;
+package com.depromeet.todo.presentation.member;
 
 import lombok.Data;
 

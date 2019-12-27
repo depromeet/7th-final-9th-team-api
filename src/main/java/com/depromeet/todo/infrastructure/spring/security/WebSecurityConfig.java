@@ -1,6 +1,8 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
+import com.depromeet.todo.application.member.LoginService;
 import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.presentation.member.LoginResponseAssembler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -33,6 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper readObjectMapper;
     private final ObjectMapper writeObjectMapper;
     private final TokenService<Long> tokenService;
+    private final LoginService loginService;
+    private final LoginResponseAssembler loginResponseAssembler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -56,7 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(this.jsonAuthenticationEntryPoint())
                 .accessDeniedHandler(this.jsonAccessDeniedHandler());
 
-        // TODO: token 발급 기능 추가되면 session 비활성화시켜야함
         http.sessionManagement().disable();
 
         http.csrf().disable();
@@ -96,12 +99,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService todoUserDetailsService() {
-        // TODO: loginService 머지되면 수정
-        return new TodoUserDetailsService();
+        return new TodoUserDetailsService(loginService);
     }
 
     private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler() {
-        return new JsonAuthenticationSuccessHandler(writeObjectMapper);
+        return new JsonAuthenticationSuccessHandler(
+                writeObjectMapper,
+                tokenService,
+                loginResponseAssembler
+        );
     }
 
     private AuthenticationFailureHandler jsonAuthenticationFailureHandler() {

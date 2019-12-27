@@ -1,5 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
+import com.depromeet.todo.presentation.member.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;

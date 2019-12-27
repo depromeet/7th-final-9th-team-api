@@ -1,6 +1,9 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
 import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.presentation.common.ApiResponse;
+import com.depromeet.todo.presentation.member.LoginResponse;
+import com.depromeet.todo.presentation.member.LoginResponseAssembler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import java.io.IOException;
 public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final ObjectMapper writeObjectMapper;
     private final TokenService<Long> tokenService;
+    private final LoginResponseAssembler loginResponseAssembler;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -27,10 +31,13 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
         String accessToken = tokenService.generate(
                 todoAuthenticationToken.getMemberId()
         );
+        LoginResponse loginResponse = loginResponseAssembler.toLoginResponse(accessToken);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        // TODO: 공통 응답 모듈 머지되면 payload 수정해야함
-        writeObjectMapper.writeValue(response.getOutputStream(), accessToken);
+        writeObjectMapper.writeValue(
+                response.getOutputStream(),
+                ApiResponse.successFrom(loginResponse)
+        );
     }
 }
