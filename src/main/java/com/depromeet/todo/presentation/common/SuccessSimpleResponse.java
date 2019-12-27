@@ -1,8 +1,13 @@
 package com.depromeet.todo.presentation.common;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-class SuccessSimpleResponse<T> implements ApiResponse<T> {
-    private final T data;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+public class SuccessSimpleResponse<T> implements ApiResponse<T> {
+    private T data;
 }

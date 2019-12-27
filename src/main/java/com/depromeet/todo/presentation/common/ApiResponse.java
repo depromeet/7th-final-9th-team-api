@@ -28,7 +28,7 @@ public interface ApiResponse<T> {
         return new SuccessSimpleResponse<>(data);
     }
 
-    static ApiResponse failureFrom(String message) {
+    static ApiResponse<String> failureFrom(String message) {
         return new FailureResponse(message, null);
     }
 }
