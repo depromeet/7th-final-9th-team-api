@@ -15,9 +15,9 @@ import javax.persistence.Enumerated;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OAuthUserInfo {
     @Enumerated(EnumType.STRING)
-    @Column(name = "oauth_user_info_provider_type", nullable = false)
+    @Column(name = "provider_type", nullable = false)
     private OAuthProviderType providerType;
-    @Column(name = "oauth_user_info_provider_user_id", nullable = false)
+    @Column(name = "provider_user_id", nullable = false)
     private String providerUserId;
 
     private OAuthUserInfo(OAuthProviderType providerType, String providerUserId) {

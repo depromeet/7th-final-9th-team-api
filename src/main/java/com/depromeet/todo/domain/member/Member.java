@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
         name = "Member",
         indexes = {
                 @Index(
-                        name = "idx_unique_Member_provider_type_Member_provider_user_id",
-                        columnList = "oauth_user_info_provider_type, oauth_user_info_provider_user_id",
+                        name = "idx_unique_Member_provider_type_provider_user_id",
+                        columnList = "provider_type, provider_user_id",
                         unique = true
                 )
         }
