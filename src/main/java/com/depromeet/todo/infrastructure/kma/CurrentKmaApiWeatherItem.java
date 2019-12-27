@@ -25,9 +25,10 @@ public class CurrentKmaApiWeatherItem implements KmaApiWeatherItem {
 
     @Override
     public Integer intValue() {
-        if (observedValue == null) {
-            throw new IllegalStateException("'observedValue' must not be null");
+        try {
+            return Integer.parseInt(observedValue);
+        } catch (NumberFormatException ex) {
+            throw new IllegalStateException("Failed to parse observed value. observedValue:" + observedValue);
         }
-        return Integer.parseInt(observedValue);
     }
 }
