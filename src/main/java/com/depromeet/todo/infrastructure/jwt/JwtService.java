@@ -4,15 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.auth0.jwt.interfaces.Payload;
 import com.depromeet.todo.application.security.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -44,14 +43,10 @@ public class JwtService implements TokenService<Long> {
     @Override
     public Optional<Long> decode(String token) {
         try {
-            DecodedJWT decodedJWT = jwtVerifier.verify(token);
-            Map<String, Claim> claims = decodedJWT.getClaims();
-            Claim idClaim = claims.get(CLAIM_NAME_MEMBER_ID);
-            if (idClaim == null) {
-                log.warn("Failed to decode jwt token. token: {}, claims:{}", token, claims);
-                return Optional.empty();
-            }
-            return Optional.of(idClaim.asLong());
+            return Optional.ofNullable(jwtVerifier.verify(token))
+                    .map(Payload::getClaims)
+                    .map(claims -> claims.get(CLAIM_NAME_MEMBER_ID))
+                    .map(Claim::asLong);
         } catch (JWTVerificationException ex) {
             log.warn("Invalid access Token. token:" + token, ex);
             return Optional.empty();
