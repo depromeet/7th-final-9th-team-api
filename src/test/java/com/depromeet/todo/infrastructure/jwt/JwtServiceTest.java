@@ -19,19 +19,14 @@ class JwtServiceTest {
                 "TOKEN_ISSUER",
                 "TOKEN_SIGNING_KEY"
         );
-        tokenService.init();
-
         anotherIssuerJwtService = new JwtService(
                 "ANOTHER_TOKEN_ISSUER",
                 "TOKEN_SIGNING_KEY"
         );
-        anotherIssuerJwtService.init();
-
         anotherSigningKeyJwtService = new JwtService(
                 "TOKEN_ISSUER",
                 "ANOTHER_TOKEN_SINGING_KEY"
         );
-        anotherSigningKeyJwtService.init();
     }
 
     @Test
@@ -53,7 +48,6 @@ class JwtServiceTest {
     void token_issuer_는_값이_달라도_decode_성공해야함() {
         // given
         Long memberId = 1L;
-
         String tokenByAnotherSigningKey = anotherIssuerJwtService.generate(memberId);
         assertThat(tokenByAnotherSigningKey).isNotBlank();
         // when
@@ -66,7 +60,6 @@ class JwtServiceTest {
     void signing_key_가_다른_경우_decode_실패해야함() {
         // given
         Long memberId = 1L;
-
         String tokenByAnotherSigningKey = anotherSigningKeyJwtService.generate(memberId);
         assertThat(tokenByAnotherSigningKey).isNotBlank();
         // when
