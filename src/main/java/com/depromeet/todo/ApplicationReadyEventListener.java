@@ -25,6 +25,7 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
     public void onApplicationEvent(ApplicationReadyEvent event) {
         try {
             Constructor<Member> constructor = Member.class.getDeclaredConstructor(Long.class, OAuthUserInfo.class);
+            constructor.setAccessible(true);
             Member member = constructor.newInstance(
                     1L,
                     OAuthUserInfo.fromKakao("providerUserId")
