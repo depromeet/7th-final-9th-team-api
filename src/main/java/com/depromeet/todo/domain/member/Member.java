@@ -37,6 +37,11 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    private Member(Long memberId, OAuthUserInfo oAuthUserInfo) {
+        this.memberId = memberId;
+        this.oauthUserInfo = oAuthUserInfo;
+    }
+
     private Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
         Assert.notNull(idGenerator, "'idGenerator' must not be null");
         Assert.notNull(oAuthUserInfo, "'oAuthUserInfo' must not be null");
