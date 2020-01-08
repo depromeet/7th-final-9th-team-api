@@ -5,10 +5,7 @@ import com.depromeet.todo.domain.weather.Weather;
 import com.depromeet.todo.domain.weather.WeatherService;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +18,7 @@ public class WeatherController {
 
     @GetMapping("/weathers")
     public ApiResponse<WeatherResponse> getWeather(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
             @RequestParam Double latitude,
             @RequestParam Double longitude
     ) {
