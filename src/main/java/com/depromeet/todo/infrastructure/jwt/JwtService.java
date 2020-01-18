@@ -43,9 +43,6 @@ public class JwtService implements TokenService<Long> {
     @Override
     public Optional<Long> decode(String token) {
         try {
-            if ("jibsuniAccessToken".equals(token)) {
-                return Optional.of(1L);
-            }
             return Optional.ofNullable(jwtVerifier.verify(token))
                     .map(Payload::getClaims)
                     .map(claims -> claims.get(CLAIM_NAME_MEMBER_ID))

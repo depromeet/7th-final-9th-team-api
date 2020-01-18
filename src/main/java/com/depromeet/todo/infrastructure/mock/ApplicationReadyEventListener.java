@@ -1,4 +1,4 @@
-package com.depromeet.todo;
+package com.depromeet.todo.infrastructure.mock;
 
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.member.MemberRepository;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Constructor;
 
 @Slf4j
-@Profile("test")
+@Profile("test-member")
 @Component
 @RequiredArgsConstructor
 public class ApplicationReadyEventListener implements ApplicationListener<ApplicationReadyEvent> {
