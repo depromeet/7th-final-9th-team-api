@@ -34,7 +34,7 @@ public class KmaWeatherAssembler implements WeatherAssembler<KmaApiResult<Curren
                 .map(KmaPrecipitationType::from)
                 .map(this::toPrecipitationType)
                 .orElseThrow(() -> {
-                    log.error("Failed to parse kmaApiResult");
+                    log.error("Failed to parse kmaApiResult. kmaApiResult: {}", kmaApiResult);
                     return new IllegalArgumentException("Failed to parse kmaApiResult");
                 });
         return Weather.of(precipitationType);
