@@ -23,8 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
 @SuppressWarnings("NonAsciiCharacters")
+@AutoConfigureMockMvc
 @Transactional
 @SpringBootTest
 public class LoginTest {
@@ -83,5 +83,17 @@ public class LoginTest {
         String secondAccessToken = this.로그인("kakaoAccessToken");
         // then
         assertThat(firstAccessToken).isEqualTo(secondAccessToken);
+    }
+
+    @Test
+    void 로그인_응답에_멤버_정보도_포함되어야함() throws Exception {
+        // given
+        when(kakaoUserService.getUserInfo(any())).thenReturn(OAuthUserInfo.fromKakao("providerUserId"));
+        // when
+        TestApiResult<SuccessSimpleResponse<LoginResponse>> loginResult = memberApi.login("kakaoAccessToken");
+        // then
+        loginResult.getResultActions()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.member").exists());
     }
 }

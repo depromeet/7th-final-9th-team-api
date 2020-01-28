@@ -1,6 +1,7 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
 import com.depromeet.todo.application.member.LoginService;
+import com.depromeet.todo.application.member.MemberService;
 import com.depromeet.todo.application.security.TokenService;
 import com.depromeet.todo.presentation.member.LoginResponseAssembler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper writeObjectMapper;
     private final TokenService<Long> tokenService;
     private final LoginService loginService;
+    private final MemberService memberService;
     private final LoginResponseAssembler loginResponseAssembler;
 
     @Override
@@ -107,6 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JsonAuthenticationSuccessHandler(
                 writeObjectMapper,
                 tokenService,
+                memberService,
                 loginResponseAssembler
         );
     }
