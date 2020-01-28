@@ -13,18 +13,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @PostMapping("/members/login")
-    public ApiResponse<LoginResponse> login(
-            @RequestHeader(required = false, name = "Authorization") String authorization,
-            @RequestBody LoginRequest loginRequest
-    ) {
+    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         return null;
     }
 
     @PostMapping("/members/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ApiResponse<LoginResponse> logout(
-            @RequestHeader(required = false, name = "Authorization") String authorization
-    ) {
+    public ApiResponse<LoginResponse> logout(@RequestHeader(required = false, name = "Authorization") String authorization) {
         return null;
     }
 }
