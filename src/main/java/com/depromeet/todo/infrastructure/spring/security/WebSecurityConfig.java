@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.antMatcher("/api/**")
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/api/members/login").permitAll()
+                .mvcMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .anyRequest().authenticated();
 
         http.formLogin().disable();
