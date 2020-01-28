@@ -28,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 public class LoginTest {
+    private static final String KAKAO_ACCESS_TOKEN = "kakaoAccessToken";
+
     @MockBean
     private OAuthService kakaoUserService;
 
@@ -48,7 +50,7 @@ public class LoginTest {
         // given
         when(kakaoUserService.getUserInfo(any())).thenReturn(OAuthUserInfo.fromKakao("providerUserId"));
         // when,then 1
-        String accessToken = this.로그인("kakaoAccessToken");
+        String accessToken = this.로그인(KAKAO_ACCESS_TOKEN);
         // when,then 2
         this.내_정보_조회(accessToken);
     }
@@ -79,8 +81,8 @@ public class LoginTest {
         // given
         when(kakaoUserService.getUserInfo(any())).thenReturn(OAuthUserInfo.fromKakao("providerUserId"));
         // when
-        String firstAccessToken = this.로그인("kakaoAccessToken");
-        String secondAccessToken = this.로그인("kakaoAccessToken");
+        String firstAccessToken = this.로그인(KAKAO_ACCESS_TOKEN);
+        String secondAccessToken = this.로그인(KAKAO_ACCESS_TOKEN);
         // then
         assertThat(firstAccessToken).isEqualTo(secondAccessToken);
     }
@@ -90,7 +92,7 @@ public class LoginTest {
         // given
         when(kakaoUserService.getUserInfo(any())).thenReturn(OAuthUserInfo.fromKakao("providerUserId"));
         // when
-        TestApiResult<SuccessSimpleResponse<LoginResponse>> loginResult = memberApi.login("kakaoAccessToken");
+        TestApiResult<SuccessSimpleResponse<LoginResponse>> loginResult = memberApi.login(KAKAO_ACCESS_TOKEN);
         // then
         loginResult.getResultActions()
                 .andExpect(status().isOk())
