@@ -12,8 +12,6 @@ public class MemberResponse implements Displayable {
     private Long id;
     private String providerType;
     private String providerUserId;
-    //    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private LocalDateTime createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime updatedAt;
 }

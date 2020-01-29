@@ -17,14 +17,15 @@ import java.time.format.DateTimeFormatter;
 public class JacksonConfig {
     @Bean
     public ObjectMapper objectMapper() {
-        LocalDateTimeSerializer localDateTimeSerializer =
-                new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTimeDeserializer localDateTimeDeserializer =
-                new LocalDateTimeDeserializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, localDateTimeSerializer);
-        javaTimeModule.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
-
+        javaTimeModule.addSerializer(
+                LocalDateTime.class,
+                new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        );
+        javaTimeModule.addDeserializer(
+                LocalDateTime.class,
+                new LocalDateTimeDeserializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        );
         return Jackson2ObjectMapperBuilder.json()
                 .modules(javaTimeModule)
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -33,13 +34,26 @@ public class JacksonConfig {
 
     @Bean("readObjectMapper")
     public ObjectMapper readObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper;
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        return Jackson2ObjectMapperBuilder.json()
+                .modules(javaTimeModule)
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
     }
 
     @Bean("writeObjectMapper")
     public ObjectMapper writeObjectMapper() {
-        return new ObjectMapper();
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(
+                LocalDateTime.class,
+                new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        );
+        return Jackson2ObjectMapperBuilder.json()
+                .modules(javaTimeModule)
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
     }
 }
