@@ -1,6 +1,5 @@
 package com.depromeet.todo.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,11 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CorsTest {
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
-    public void CORS_확인을_위헤_OPTIONS_메서드를_사용할_수_있는지() throws Exception {
+    public void CORS_확인을_위해_OPTIONS_메서드를_사용할_수_있는지() throws Exception {
         // given
         String origin = "http://localhost:3000";
         // when
