@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +37,7 @@ public class TestMemberTest {
                 get("/api/members/me")
                         .header("Authorization", "bearer " + testToken))
                 // then
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -52,8 +54,6 @@ public class TestMemberTest {
                         .content(objectMapper.writeValueAsBytes(loginRequest)))
                 // then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.member").exists())
-                .andExpect(jsonPath("$.data.member.id").value("1"));
-
+                .andExpect(jsonPath("$.data.member").exists());
     }
 }
