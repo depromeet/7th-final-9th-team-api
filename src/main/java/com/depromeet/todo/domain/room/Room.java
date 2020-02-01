@@ -1,6 +1,5 @@
 package com.depromeet.todo.domain.room;
 
-import com.depromeet.todo.domain.IdGenerator;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -28,31 +27,13 @@ public class Room {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private Room(Long roomId,
-                 Long memberId,
-                 RoomType type,
-                 LocalDateTime createdAt,
-                 LocalDateTime updatedAt) {
+    Room(Long roomId,
+         Long memberId,
+         RoomType type) {
         this.roomId = roomId;
         this.memberId = memberId;
         this.type = type;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.validate();
-    }
-
-    public static Room of(IdGenerator idGenerator,
-                          Long memberId,
-                          RoomType type) {
-        Assert.notNull(idGenerator, "'idGenerator' must not be null");
-
-        return new Room(
-                idGenerator.generate(),
-                memberId,
-                type,
-                null,
-                null
-        );
     }
 
     private void validate() {

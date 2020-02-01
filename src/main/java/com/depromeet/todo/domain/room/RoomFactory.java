@@ -36,7 +36,11 @@ public class RoomFactory {
         Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(roomType, "'roomType' must not be null");
 
-        Room room = Room.of(snowFlakeIdGenerator, memberId, roomType);
+        Room room = new Room(
+                snowFlakeIdGenerator.generate(),
+                memberId,
+                roomType
+        );
         roomRepository.save(room);
 
         applicationEventPublisher.publishEvent(
