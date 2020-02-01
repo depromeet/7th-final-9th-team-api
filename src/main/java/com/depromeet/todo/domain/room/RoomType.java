@@ -11,8 +11,8 @@ public enum RoomType {
     BATHROOM("bathroom"),
     UNKNOWN("");
 
-    public static final Set<RoomType> AVAILABLE_TYPES = Arrays.stream(RoomType.values())
-            .filter(it -> it.equals(UNKNOWN))
+    static final Set<RoomType> AVAILABLE_TYPES = Arrays.stream(RoomType.values())
+            .filter(it -> !it.equals(UNKNOWN))
             .collect(Collectors.toSet());
 
     private final String name;
