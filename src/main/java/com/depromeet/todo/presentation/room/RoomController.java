@@ -5,6 +5,9 @@ import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomType;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -27,9 +30,34 @@ public class RoomController {
     ) {
         Room room = roomService.createRoom(
                 memberId,
-                RoomType.valueOf(createRoomRequest.getRoomType())
+                RoomType.fromName(createRoomRequest.getRoomType())
         );
-        RoomResponse roomResponse = roomResponseAssembler.toDisplayableMember(room);
+        RoomResponse roomResponse = roomResponseAssembler.toDisplayableRoom(room);
+        return ApiResponse.successFrom(roomResponse);
+    }
+
+    @GetMapping("/members/me/rooms")
+    public ApiResponse<RoomResponse> getRooms(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @ApiIgnore @PageableDefault(size = 20) Pageable pageable
+    ) {
+        Page<RoomResponse> roomPage = roomService.getRooms(memberId, pageable)
+                .map(roomResponseAssembler::toDisplayableRoom);
+        return ApiResponse.successFrom(roomPage);
+    }
+
+    @GetMapping("/members/me/rooms/{roomId}")
+    public ApiResponse<RoomResponse> getRoom(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long roomId
+    ) {
+        Room room = roomService.getRoom(memberId, roomId);
+        RoomResponse roomResponse = roomResponseAssembler.toDisplayableRoom(room);
         return ApiResponse.successFrom(roomResponse);
     }
 }
+
