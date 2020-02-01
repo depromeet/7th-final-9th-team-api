@@ -1,0 +1,77 @@
+package com.depromeet.todo.application.room;
+
+import com.depromeet.todo.application.BadRequestException;
+import com.depromeet.todo.application.ResourceNotFoundException;
+import com.depromeet.todo.domain.IdGenerator;
+import com.depromeet.todo.domain.member.Member;
+import com.depromeet.todo.domain.member.MemberRepository;
+import com.depromeet.todo.domain.room.Room;
+import com.depromeet.todo.domain.room.RoomRepository;
+import com.depromeet.todo.domain.room.RoomType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class RoomService {
+    private final MemberRepository memberRepository;
+    private final RoomRepository roomRepository;
+    private final IdGenerator idGenerator;
+
+    @Transactional
+    public Room createRoom(Long memberId, RoomType roomType) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomType, "'roomType' must not be null");
+
+        Member member = this.getMember(memberId);
+        if (roomRepository.existsByOwnerAndType(member, roomType)) {
+            log.warn("room already exists. owner: {}, roomType: {}", member, roomType);
+            throw new BadRequestException("room already exists");
+        }
+
+        Room room = Room.of(
+                idGenerator,
+                member,
+                roomType
+        );
+        return roomRepository.save(room);
+    }
+
+    @Transactional(readOnly = true)
+    public Room getRoom(Long memberId, Long roomId) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomId, "'roomId' must not be null");
+
+        Member member = this.getMember(memberId);
+        return roomRepository.findByRoomIdAndOwner(roomId, member)
+                .orElseThrow(() -> {
+                    log.warn("Room not found. roomId: {}, member: {}", roomId, member);
+                    return new ResourceNotFoundException("Room not found");
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Room> getRooms(Long memberId, Pageable pageable) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(pageable, "'pageable' must not be null");
+
+        Member member = this.getMember(memberId);
+        return roomRepository.findByOwner(member, pageable);
+    }
+
+    private Member getMember(Long memberId) {
+        assert memberId != null;
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("Member not found. memberId: {}", memberId);
+                    return new ResourceNotFoundException("Member not found. memberId: " + memberId);
+                });
+    }
+
+}
