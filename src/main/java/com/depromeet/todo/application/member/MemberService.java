@@ -2,8 +2,8 @@ package com.depromeet.todo.application.member;
 
 import com.depromeet.todo.application.BadRequestException;
 import com.depromeet.todo.application.ResourceNotFoundException;
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
+import com.depromeet.todo.domain.member.MemberFactory;
 import com.depromeet.todo.domain.member.MemberRepository;
 import com.depromeet.todo.domain.member.oauth.OAuthAccessToken;
 import com.depromeet.todo.domain.member.oauth.OAuthService;
@@ -17,8 +17,8 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final IdGenerator snowFlakeIdGenerator;
     private final OAuthService kakaoUserService;
+    private final MemberFactory memberFactory;
 
     @Transactional
     public Member getOrCreateMember(String accessToken) {
@@ -28,10 +28,7 @@ public class MemberService {
         OAuthUserInfo oAuthUserInfo = kakaoUserService.getUserInfo(oAuthAccessToken);
 
         return memberRepository.findByOauthUserInfo(oAuthUserInfo)
-                .orElseGet(() -> {
-                    Member member = Member.of(snowFlakeIdGenerator, oAuthUserInfo);
-                    return memberRepository.save(member);
-                });
+                .orElseGet(() -> memberFactory.createMember(oAuthUserInfo));
     }
 
     @Transactional(readOnly = true)

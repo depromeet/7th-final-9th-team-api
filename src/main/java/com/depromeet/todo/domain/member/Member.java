@@ -39,13 +39,7 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private Member(Long memberId, OAuthUserInfo oAuthUserInfo) {
-        this.memberId = memberId;
-        this.oauthUserInfo = oAuthUserInfo;
-        this.name = null;
-    }
-
-    private Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
+    Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
         Assert.notNull(idGenerator, "'idGenerator' must not be null");
         Assert.notNull(oAuthUserInfo, "'oAuthUserInfo' must not be null");
 
@@ -53,10 +47,6 @@ public class Member {
         this.oauthUserInfo = oAuthUserInfo;
         this.name = null;
         this.validate();
-    }
-
-    public static Member of(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
-        return new Member(idGenerator, oAuthUserInfo);
     }
 
     public Member updateName(String name) {

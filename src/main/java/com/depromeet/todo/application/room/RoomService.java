@@ -4,12 +4,15 @@ import com.depromeet.todo.application.BadRequestException;
 import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
+import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.member.MemberRepository;
 import com.depromeet.todo.domain.room.Room;
+import com.depromeet.todo.domain.room.RoomFactory;
 import com.depromeet.todo.domain.room.RoomRepository;
 import com.depromeet.todo.domain.room.RoomType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ public class RoomService {
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
     private final IdGenerator idGenerator;
+    private final RoomFactory roomFactory;
 
     @Transactional
     public Room createRoom(Long memberId, RoomType roomType) {
@@ -35,12 +39,7 @@ public class RoomService {
             throw new BadRequestException("room already exists");
         }
 
-        Room room = Room.of(
-                idGenerator,
-                member.getMemberId(),
-                roomType
-        );
-        return roomRepository.save(room);
+        return roomFactory.createRoom(member.getMemberId(), roomType);
     }
 
     @Transactional(readOnly = true)
@@ -72,5 +71,15 @@ public class RoomService {
                     log.warn("Member not found. memberId: {}", memberId);
                     return new ResourceNotFoundException("Member not found. memberId: " + memberId);
                 });
+    }
+
+    @EventListener
+    @Transactional
+    public void createInitialRooms(MemberCreatedEvent memberCreatedEvent) {
+        Assert.notNull(memberCreatedEvent, "'memberCreatedEvent' must not be null");
+
+        roomFactory.createInitialRooms(
+                memberCreatedEvent.getMemberId()
+        );
     }
 }
