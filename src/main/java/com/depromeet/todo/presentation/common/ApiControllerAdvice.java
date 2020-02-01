@@ -1,7 +1,8 @@
 package com.depromeet.todo.presentation.common;
 
 import com.depromeet.todo.application.ExternalServiceException;
-import com.depromeet.todo.domain.room.RoomTypeException;
+import com.depromeet.todo.domain.furniture.IllegalFurnitureTypeException;
+import com.depromeet.todo.domain.room.IllegalRoomTypeException;
 import com.depromeet.todo.infrastructure.spring.security.TodoAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,8 @@ public class ApiControllerAdvice {
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,
-            RoomTypeException.class
+            IllegalRoomTypeException.class,
+            IllegalFurnitureTypeException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse handleMethodArgumentNotValidException(Exception ex) {

@@ -1,5 +1,6 @@
 package com.depromeet.todo.presentation.common;
 
+import com.depromeet.todo.presentation.furniture.FurnitureResponse;
 import com.depromeet.todo.presentation.member.MemberResponse;
 import com.depromeet.todo.presentation.room.RoomResponse;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,9 @@ public interface ApiResponse<T> {
         }
         if (data instanceof RoomResponse) {
             return new SuccessSimpleResponse<>(data, "room");
+        }
+        if (data instanceof FurnitureResponse) {
+            return new SuccessSimpleResponse<>(data, "furniture");
         }
         return new SuccessMapResponse<>(data);
     }
