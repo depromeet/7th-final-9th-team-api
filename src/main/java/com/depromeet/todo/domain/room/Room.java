@@ -65,7 +65,7 @@ public class Room {
             String availableTypes = RoomType.AVAILABLE_TYPES.stream()
                     .map(RoomType::getName)
                     .collect(Collectors.joining(", ", "[","]"));
-            throw new RoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
+            throw new IllegalRoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
         }
     }
 }
