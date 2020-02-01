@@ -61,7 +61,7 @@ public class Room {
         Assert.notNull(owner, "'owner' must not be null");
         Assert.notNull(type, "'type' must not be null");
         if (type == RoomType.UNKNOWN) {
-            throw new IllegalStateException("'type' must not be UNKNOWN");
+            throw new RoomTypeException("'type' must not be UNKNOWN");
         }
     }
 }
