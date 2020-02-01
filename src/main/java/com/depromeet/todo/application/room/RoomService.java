@@ -30,14 +30,14 @@ public class RoomService {
         Assert.notNull(roomType, "'roomType' must not be null");
 
         Member member = this.getMember(memberId);
-        if (roomRepository.existsByOwnerAndType(member, roomType)) {
+        if (roomRepository.existsByMemberIdAndType(member.getMemberId(), roomType)) {
             log.warn("room already exists. owner: {}, roomType: {}", member, roomType);
             throw new BadRequestException("room already exists");
         }
 
         Room room = Room.of(
                 idGenerator,
-                member,
+                member.getMemberId(),
                 roomType
         );
         return roomRepository.save(room);
@@ -49,7 +49,7 @@ public class RoomService {
         Assert.notNull(roomId, "'roomId' must not be null");
 
         Member member = this.getMember(memberId);
-        return roomRepository.findByRoomIdAndOwner(roomId, member)
+        return roomRepository.findByRoomIdAndMemberId(roomId, member.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("Room not found. roomId: {}, member: {}", roomId, member);
                     return new ResourceNotFoundException("Room not found");
@@ -62,7 +62,7 @@ public class RoomService {
         Assert.notNull(pageable, "'pageable' must not be null");
 
         Member member = this.getMember(memberId);
-        return roomRepository.findByOwner(member, pageable);
+        return roomRepository.findByMemberId(member.getMemberId(), pageable);
     }
 
     private Member getMember(Long memberId) {
@@ -73,5 +73,4 @@ public class RoomService {
                     return new ResourceNotFoundException("Member not found. memberId: " + memberId);
                 });
     }
-
 }

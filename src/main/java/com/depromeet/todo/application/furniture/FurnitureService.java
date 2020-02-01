@@ -45,7 +45,7 @@ public class FurnitureService {
     private Room getRoom(Member owner, Long roomId) {
         assert owner != null;
         assert roomId != null;
-        return roomRepository.findByRoomIdAndOwner(roomId, owner)
+        return roomRepository.findByRoomIdAndMemberId(roomId, owner.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("Room not found. roomId: {}, member: {}", roomId, owner);
                     return new ResourceNotFoundException("Room not found. roomId: " + roomId);
