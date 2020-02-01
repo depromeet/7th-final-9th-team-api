@@ -1,6 +1,8 @@
 package com.depromeet.todo.domain.room;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum RoomType {
     LIVING_ROOM("living-room"),
@@ -8,6 +10,10 @@ public enum RoomType {
     KITCHEN("kitchen"),
     BATHROOM("bathroom"),
     UNKNOWN("");
+
+    public static final Set<RoomType> AVAILABLE_TYPES = Arrays.stream(RoomType.values())
+            .filter(it -> it.equals(UNKNOWN))
+            .collect(Collectors.toSet());
 
     private final String name;
 
