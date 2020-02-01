@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class Member {
     private Long memberId;
     @Embedded
     private OAuthUserInfo oauthUserInfo; // XXX: 필드 이름을 'oAuthUserInfo' 로 쓰면, spring data jpa query 가 잘 생성되지 않음
+    private String name;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
@@ -40,6 +42,7 @@ public class Member {
     private Member(Long memberId, OAuthUserInfo oAuthUserInfo) {
         this.memberId = memberId;
         this.oauthUserInfo = oAuthUserInfo;
+        this.name = null;
     }
 
     private Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
@@ -48,11 +51,21 @@ public class Member {
 
         this.memberId = idGenerator.generate();
         this.oauthUserInfo = oAuthUserInfo;
+        this.name = null;
         this.validate();
     }
 
     public static Member of(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
         return new Member(idGenerator, oAuthUserInfo);
+    }
+
+    public Member updateName(String name) {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("'name' must not be null or empty");
+        }
+        this.name = name;
+        this.validate();
+        return this;
     }
 
     private void validate() {

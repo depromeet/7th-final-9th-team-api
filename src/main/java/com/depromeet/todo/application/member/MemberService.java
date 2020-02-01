@@ -41,4 +41,13 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Member not found. memberId:" + memberId));
     }
+
+    @Transactional
+    public Member updateMember(Long memberId, String name) {
+        BadRequestException.nonNull(memberId, "'memberId' must not be null");
+
+        return memberRepository.findById(memberId)
+                .map(it -> it.updateName(name))
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found. memberId:" + memberId));
+    }
 }

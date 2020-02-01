@@ -3,10 +3,6 @@ package com.depromeet.todo.integration;
 import com.depromeet.todo.domain.member.oauth.OAuthService;
 import com.depromeet.todo.domain.member.oauth.OAuthUserInfo;
 import com.depromeet.todo.integration.api.MemberApi;
-import com.depromeet.todo.integration.api.TestApiResult;
-import com.depromeet.todo.presentation.common.SuccessSimpleResponse;
-import com.depromeet.todo.presentation.member.LoginResponse;
-import com.depromeet.todo.presentation.member.MemberResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +11,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,24 +55,19 @@ public class LoginTest {
     }
 
     private String 로그인(String accessToken) throws Exception {
-        TestApiResult<SuccessSimpleResponse<LoginResponse>> loginResult = memberApi.login(accessToken);
-
-        loginResult.getResultActions()
+        MvcResult mvcResult = memberApi.login(accessToken)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty());
-
-        return loginResult.getApiResponse().getData().getAccessToken();
+                .andExpect(jsonPath("$.data.accessToken").exists())
+                .andReturn();
+        Map map = objectMapper.readValue(mvcResult.getResponse().getContentAsByteArray(), Map.class);
+        Map<String, Object> dataMap = (Map<String, Object>) ((Map<String, Object>) map).get("data");
+        return (String) dataMap.get("accessToken");
     }
 
     private void 내_정보_조회(String accessToken) throws Exception {
-        TestApiResult<SuccessSimpleResponse<MemberResponse>> getMeResult = memberApi.getMe(accessToken);
-
-        getMeResult.getResultActions()
+        memberApi.getMe(accessToken)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id").isNotEmpty());
-
-        Long memberId = getMeResult.getApiResponse().getData().getId();
-        assertThat(memberId).isNotNull();
+                .andExpect(jsonPath("$.data.member.id").exists());
     }
 
     @Test
@@ -92,9 +86,8 @@ public class LoginTest {
         // given
         when(kakaoUserService.getUserInfo(any())).thenReturn(OAuthUserInfo.fromKakao("providerUserId"));
         // when
-        TestApiResult<SuccessSimpleResponse<LoginResponse>> loginResult = memberApi.login(KAKAO_ACCESS_TOKEN);
-        // then
-        loginResult.getResultActions()
+        memberApi.login(KAKAO_ACCESS_TOKEN)
+                // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.member").exists());
     }
