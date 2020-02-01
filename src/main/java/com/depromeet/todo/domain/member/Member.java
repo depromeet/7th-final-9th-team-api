@@ -1,6 +1,5 @@
 package com.depromeet.todo.domain.member;
 
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.oauth.OAuthUserInfo;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,11 +38,11 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    Member(IdGenerator idGenerator, OAuthUserInfo oAuthUserInfo) {
-        Assert.notNull(idGenerator, "'idGenerator' must not be null");
+    Member(Long memberId, OAuthUserInfo oAuthUserInfo) {
+        Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(oAuthUserInfo, "'oAuthUserInfo' must not be null");
 
-        this.memberId = idGenerator.generate();
+        this.memberId = memberId;
         this.oauthUserInfo = oAuthUserInfo;
         this.name = null;
         this.validate();

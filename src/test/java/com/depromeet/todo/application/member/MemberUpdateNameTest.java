@@ -1,7 +1,7 @@
 package com.depromeet.todo.application.member;
 
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
+import com.depromeet.todo.domain.member.MemberFactory;
 import com.depromeet.todo.domain.member.oauth.OAuthUserInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class MemberUpdateNameTest {
     @Autowired
-    private IdGenerator idGenerator;
+    private MemberFactory memberFactory;
 
     @Test
     void 이름_업데이트() {
         // given
         OAuthUserInfo oAuthUserInfo = OAuthUserInfo.fromKakao("providerUserId");
-        Member member = Member.of(idGenerator, oAuthUserInfo);
+        Member member = memberFactory.createMember(oAuthUserInfo);
         // when
         member.updateName("updatedName");
         // then

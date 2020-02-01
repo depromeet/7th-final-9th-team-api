@@ -19,7 +19,7 @@ public class MemberFactory {
     public Member createMember(OAuthUserInfo oAuthUserInfo) {
         Assert.notNull(oAuthUserInfo, "'oAuthUserInfo' must not be null");
 
-        Member member = new Member(snowFlakeIdGenerator, oAuthUserInfo);
+        Member member = new Member(snowFlakeIdGenerator.generate(), oAuthUserInfo);
         memberRepository.save(member);
         applicationEventPublisher.publishEvent(
                 MemberCreatedEvent.of(this, member.getMemberId())
