@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -21,6 +23,17 @@ public class MemberController {
     ) {
         Member member = memberService.getMember(memberId);
         MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
-        return ApiResponse.successFrom(memberResponse);
+        return ApiResponse.successOf(memberResponse, "member");
+    }
+
+    @PutMapping("/members/me")
+    public ApiResponse<MemberResponse> updateMe(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @RequestBody @Valid MemberUpdateRequest memberUpdateRequest
+    ) {
+        Member member = memberService.updateMember(memberId, memberUpdateRequest.getName());
+        MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
+        return ApiResponse.successOf(memberResponse, "member");
     }
 }

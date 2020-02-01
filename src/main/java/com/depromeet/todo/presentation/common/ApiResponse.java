@@ -25,7 +25,11 @@ public interface ApiResponse<T> {
     }
 
     static <T> ApiResponse<T> successFrom(T data) {
-        return new SuccessSimpleResponse<>(data);
+        return new SuccessMapResponse<>(data);
+    }
+
+    static <T> ApiResponse<T> successOf(T data, String name) {
+        return new SuccessSimpleResponse<>(data, name);
     }
 
     static ApiResponse<String> failureFrom(String message) {

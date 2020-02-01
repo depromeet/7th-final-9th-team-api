@@ -1,5 +1,6 @@
 package com.depromeet.todo.presentation.common;
 
+import com.depromeet.todo.presentation.member.LoginResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.SliceImpl;
@@ -12,11 +13,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SuccessResponseTest {
     @Test
     void 한_개의_객체로_성공_응답하는_경우() {
-        ApiResponse<String> apiResponse = ApiResponse.successFrom("This is a response object");
+        ApiResponse<String> apiResponse = ApiResponse.successOf("This is a response object", "key");
 
         assertThat(apiResponse).isInstanceOf(SuccessSimpleResponse.class);
         SuccessSimpleResponse<String> successSimpleResponse = (SuccessSimpleResponse<String>) apiResponse;
-        assertThat(successSimpleResponse.getData()).isEqualTo("This is a response object");
+        assertThat(successSimpleResponse.getData().get("key")).isEqualTo("This is a response object");
+    }
+
+    @Test
+    void 두_개_이상의_객체로_성공_응답하는_경우() {
+        ApiResponse<LoginResponse> apiResponse = ApiResponse.successFrom(new LoginResponse());
+
+        assertThat(apiResponse).isInstanceOf(SuccessMapResponse.class);
     }
 
     @Test

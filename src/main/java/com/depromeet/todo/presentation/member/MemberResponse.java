@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class MemberResponse implements Displayable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
+    private String name;
     private String providerType;
     private String providerUserId;
     private LocalDateTime createdAt;

@@ -1,10 +1,6 @@
 package com.depromeet.todo.integration.api;
 
-import com.depromeet.todo.presentation.common.SuccessSimpleResponse;
 import com.depromeet.todo.presentation.member.LoginRequest;
-import com.depromeet.todo.presentation.member.LoginResponse;
-import com.depromeet.todo.presentation.member.MemberResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,33 +18,22 @@ public class MemberApi {
         this.objectMapper = objectMapper;
     }
 
-    public TestApiResult<SuccessSimpleResponse<LoginResponse>> login(String kakaoAccessToken) throws Exception {
+    public ResultActions login(String kakaoAccessToken) throws Exception {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setAccessToken(kakaoAccessToken);
 
-        ResultActions resultActions = mockMvc.perform(
+        return mockMvc.perform(
                 post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(loginRequest))
         );
-        return new TestApiResult<>(
-                resultActions,
-                new TypeReference<SuccessSimpleResponse<LoginResponse>>() {
-                },
-                objectMapper
-        );
     }
 
-    public TestApiResult<SuccessSimpleResponse<MemberResponse>> getMe(String accessToken) throws Exception {
-        ResultActions resultActions = mockMvc.perform(
+    public ResultActions getMe(String accessToken) throws Exception {
+        return mockMvc.perform(
                 get("/api/members/me")
                         .header("Authorization", "bearer " + accessToken)
         );
-        return new TestApiResult<>(
-                resultActions,
-                new TypeReference<SuccessSimpleResponse<MemberResponse>>() {
-                },
-                objectMapper
-        );
+
     }
 }
