@@ -1,7 +1,6 @@
 package com.depromeet.todo.domain.furniture;
 
 import com.depromeet.todo.domain.IdGenerator;
-import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.room.Room;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,8 +21,7 @@ import java.util.stream.Collectors;
 public class Furniture {
     @Id
     private Long furnitureId;
-    @ManyToOne
-    private Member owner;
+    private Long memberId;
     @ManyToOne
     private Room room;
     @Enumerated(EnumType.STRING)
@@ -34,13 +32,13 @@ public class Furniture {
     private LocalDateTime updatedAt;
 
     private Furniture(Long furnitureId,
-                      Member owner,
+                      Long memberId,
                       Room room,
                       FurnitureType furnitureType,
                       LocalDateTime createdAt,
                       LocalDateTime updatedAt) {
         this.furnitureId = furnitureId;
-        this.owner = owner;
+        this.memberId = memberId;
         this.room = room;
         this.furnitureType = furnitureType;
         this.createdAt = createdAt;
@@ -49,14 +47,14 @@ public class Furniture {
     }
 
     public static Furniture of(IdGenerator idGenerator,
-                               Member owner,
+                               Long memberId,
                                Room room,
                                FurnitureType furnitureType) {
         Assert.notNull(idGenerator, "'idGenerator' must not be null");
 
         return new Furniture(
                 idGenerator.generate(),
-                owner,
+                memberId,
                 room,
                 furnitureType,
                 null,
@@ -66,7 +64,7 @@ public class Furniture {
 
     private void validate() {
         Assert.notNull(furnitureId, "'furnitureId' must not be null");
-        Assert.notNull(owner, "'owner' must not be null");
+        Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(furnitureType, "'furnitureType' must not be null");
         if (furnitureType == FurnitureType.UNKNOWN) {
             String availableTypes = FurnitureType.AVAILABLE_SET.stream()

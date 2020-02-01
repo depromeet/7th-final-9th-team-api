@@ -29,13 +29,14 @@ public class FurnitureService {
     @Transactional
     public Furniture createFurniture(Long memberId, Long roomId, FurnitureType furnitureType) {
         Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomId, "'roomId' must not be null");
         Assert.notNull(furnitureType, "'furnitureType' must not be null");
 
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
         Furniture furniture = Furniture.of(
                 idGenerator,
-                member,
+                member.getMemberId(),
                 room,
                 furnitureType
         );
@@ -45,7 +46,7 @@ public class FurnitureService {
     private Room getRoom(Member owner, Long roomId) {
         assert owner != null;
         assert roomId != null;
-        return roomRepository.findByRoomIdAndOwner(roomId, owner)
+        return roomRepository.findByRoomIdAndMemberId(roomId, owner.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("Room not found. roomId: {}, member: {}", roomId, owner);
                     return new ResourceNotFoundException("Room not found. roomId: " + roomId);
@@ -69,7 +70,7 @@ public class FurnitureService {
 
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
-        return furnitureRepository.findByOwnerAndRoom(member, room, pageable);
+        return furnitureRepository.findByMemberIdAndRoom(member.getMemberId(), room, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -80,7 +81,7 @@ public class FurnitureService {
 
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
-        return furnitureRepository.findByFurnitureIdAndOwnerAndRoom(furnitureId, member, room)
+        return furnitureRepository.findByFurnitureIdAndMemberIdAndRoom(furnitureId, member.getMemberId(), room)
                 .orElseThrow(() -> {
                     log.warn("Furniture not found. furnitureId: {}, member: {}, room: {}", furnitureId, member, room);
                     return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);

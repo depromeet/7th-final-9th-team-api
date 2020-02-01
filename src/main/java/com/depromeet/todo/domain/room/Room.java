@@ -1,7 +1,5 @@
 package com.depromeet.todo.domain.room;
 
-import com.depromeet.todo.domain.IdGenerator;
-import com.depromeet.todo.domain.member.Member;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -21,8 +19,7 @@ import java.util.stream.Collectors;
 public class Room {
     @Id
     private Long roomId;
-    @ManyToOne
-    private Member owner;
+    private Long memberId;
     @Enumerated(EnumType.STRING)
     private RoomType type;
     @CreatedDate
@@ -30,41 +27,23 @@ public class Room {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private Room(Long roomId,
-                 Member owner,
-                 RoomType type,
-                 LocalDateTime createdAt,
-                 LocalDateTime updatedAt) {
+    Room(Long roomId,
+         Long memberId,
+         RoomType type) {
         this.roomId = roomId;
-        this.owner = owner;
+        this.memberId = memberId;
         this.type = type;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.validate();
-    }
-
-    public static Room of(IdGenerator idGenerator,
-                          Member owner,
-                          RoomType type) {
-        Assert.notNull(idGenerator, "'idGenerator' must not be null");
-
-        return new Room(
-                idGenerator.generate(),
-                owner,
-                type,
-                null,
-                null
-        );
     }
 
     private void validate() {
         Assert.notNull(roomId, "'roomId' must not be null");
-        Assert.notNull(owner, "'owner' must not be null");
+        Assert.notNull(memberId, "memberId");
         Assert.notNull(type, "'type' must not be null");
         if (type == RoomType.UNKNOWN) {
             String availableTypes = RoomType.AVAILABLE_TYPES.stream()
                     .map(RoomType::getName)
-                    .collect(Collectors.joining(", ", "[","]"));
+                    .collect(Collectors.joining(", ", "[", "]"));
             throw new IllegalRoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
         }
     }
