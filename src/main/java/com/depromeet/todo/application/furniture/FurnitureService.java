@@ -11,6 +11,8 @@ import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -56,6 +58,32 @@ public class FurnitureService {
                 .orElseThrow(() -> {
                     log.warn("Member not found. memberId: {}", memberId);
                     return new ResourceNotFoundException("Member not found. memberId: " + memberId);
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Furniture> getFurnitures(Long memberId, Long roomId, Pageable pageable) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomId, "'roomId' must not be null");
+        Assert.notNull(pageable, "'pageable' must not be null");
+
+        Member member = this.getMember(memberId);
+        Room room = this.getRoom(member, roomId);
+        return furnitureRepository.findByOwnerAndRoom(member, room, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Furniture getFurniture(Long memberId, Long roomId, Long furnitureId) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomId, "'roomId' must not be null");
+        Assert.notNull(furnitureId, "'furnitureId' must not be null");
+
+        Member member = this.getMember(memberId);
+        Room room = this.getRoom(member, roomId);
+        return furnitureRepository.findByFurnitureIdAndOwnerAndRoom(furnitureId, member, room)
+                .orElseThrow(() -> {
+                    log.warn("Furniture not found. furnitureId: {}, member: {}, room: {}", furnitureId, member, room);
+                    return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);
                 });
     }
 }
