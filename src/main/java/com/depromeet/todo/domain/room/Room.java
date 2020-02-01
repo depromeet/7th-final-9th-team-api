@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -60,5 +61,11 @@ public class Room {
         Assert.notNull(roomId, "'roomId' must not be null");
         Assert.notNull(owner, "'owner' must not be null");
         Assert.notNull(type, "'type' must not be null");
+        if (type == RoomType.UNKNOWN) {
+            String availableTypes = RoomType.AVAILABLE_TYPES.stream()
+                    .map(RoomType::getName)
+                    .collect(Collectors.joining(", ", "[","]"));
+            throw new RoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
+        }
     }
 }
