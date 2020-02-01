@@ -23,7 +23,7 @@ public class MemberController {
     ) {
         Member member = memberService.getMember(memberId);
         MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
-        return ApiResponse.successOf(memberResponse, "member");
+        return ApiResponse.successFrom(memberResponse);
     }
 
     @PutMapping("/members/me")
@@ -34,6 +34,6 @@ public class MemberController {
     ) {
         Member member = memberService.updateMember(memberId, memberUpdateRequest.getName());
         MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
-        return ApiResponse.successOf(memberResponse, "member");
+        return ApiResponse.successFrom(memberResponse);
     }
 }

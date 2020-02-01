@@ -10,10 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,20 +23,21 @@ public class Room {
     private Long roomId;
     @ManyToOne
     private Member owner;
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoomType type;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Room(Long roomId,
-                Member owner,
-                String name,
-                LocalDateTime createdAt,
-                LocalDateTime updatedAt) {
+    private Room(Long roomId,
+         Member owner,
+         RoomType type,
+         LocalDateTime createdAt,
+         LocalDateTime updatedAt) {
         this.roomId = roomId;
         this.owner = owner;
-        this.name = name;
+        this.type = type;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.validate();
@@ -47,13 +45,13 @@ public class Room {
 
     public static Room of(IdGenerator idGenerator,
                           Member owner,
-                          String name) {
+                          RoomType type) {
         Assert.notNull(idGenerator, "'idGenerator' must not be null");
 
         return new Room(
                 idGenerator.generate(),
                 owner,
-                name,
+                type,
                 null,
                 null
         );
@@ -62,6 +60,6 @@ public class Room {
     private void validate() {
         Assert.notNull(roomId, "'roomId' must not be null");
         Assert.notNull(owner, "'owner' must not be null");
-        Assert.hasText(name, "'name' must not be null, empty or blank");
+        Assert.notNull(type, "'type' must not be null");
     }
 }

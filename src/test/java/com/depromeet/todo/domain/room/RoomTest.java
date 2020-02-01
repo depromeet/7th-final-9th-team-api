@@ -19,8 +19,8 @@ class RoomTest {
 
     @Test
     void room_생성() {
-        Room room = Room.of(idGenerator, mock(Member.class), "name");
+        Room room = Room.of(idGenerator, mock(Member.class), RoomType.BEDROOM);
         assertThat(room).isNotNull();
-        assertThat(room.getName()).isEqualTo("name");
+        assertThat(room.getType()).isEqualTo(RoomType.BEDROOM);
     }
 }
