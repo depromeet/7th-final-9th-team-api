@@ -2,9 +2,7 @@ package com.depromeet.todo.domain.room;
 
 import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Room {
     @Id
@@ -31,10 +30,10 @@ public class Room {
     private LocalDateTime updatedAt;
 
     private Room(Long roomId,
-         Member owner,
-         RoomType type,
-         LocalDateTime createdAt,
-         LocalDateTime updatedAt) {
+                 Member owner,
+                 RoomType type,
+                 LocalDateTime createdAt,
+                 LocalDateTime updatedAt) {
         this.roomId = roomId;
         this.owner = owner;
         this.type = type;
