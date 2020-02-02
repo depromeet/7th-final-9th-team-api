@@ -21,7 +21,7 @@ public class RoomController {
     private final RoomService roomService;
     private final RoomResponseAssembler roomResponseAssembler;
 
-    @PostMapping("/members/me/rooms")
+    @PostMapping("/rooms")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<RoomResponse> createRoom(
             @RequestHeader(required = false, name = "Authorization") String authorization,
@@ -36,7 +36,7 @@ public class RoomController {
         return ApiResponse.successFrom(roomResponse);
     }
 
-    @GetMapping("/members/me/rooms")
+    @GetMapping("/rooms")
     public ApiResponse<RoomResponse> getRooms(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @RequestParam(defaultValue = "0") int page,
@@ -49,7 +49,7 @@ public class RoomController {
         return ApiResponse.successFrom(roomPage);
     }
 
-    @GetMapping("/members/me/rooms/{roomId}")
+    @GetMapping("/rooms/{roomId}")
     public ApiResponse<RoomResponse> getRoom(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
