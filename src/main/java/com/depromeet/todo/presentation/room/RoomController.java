@@ -1,6 +1,6 @@
 package com.depromeet.todo.presentation.room;
 
-import com.depromeet.todo.application.room.RoomService;
+import com.depromeet.todo.application.room.RoomApplicationService;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomType;
 import com.depromeet.todo.presentation.common.ApiResponse;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class RoomController {
-    private final RoomService roomService;
+    private final RoomApplicationService roomApplicationService;
     private final RoomResponseAssembler roomResponseAssembler;
 
     @PostMapping("/rooms")
@@ -28,7 +28,7 @@ public class RoomController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @RequestBody @Valid CreateRoomRequest createRoomRequest
     ) {
-        Room room = roomService.createRoom(
+        Room room = roomApplicationService.createRoom(
                 memberId,
                 RoomType.fromName(createRoomRequest.getRoomType())
         );
@@ -44,7 +44,7 @@ public class RoomController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @ApiIgnore @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<RoomResponse> roomPage = roomService.getRooms(memberId, pageable)
+        Page<RoomResponse> roomPage = roomApplicationService.getRooms(memberId, pageable)
                 .map(roomResponseAssembler::toDisplayableRoom);
         return ApiResponse.successFrom(roomPage);
     }
@@ -55,7 +55,7 @@ public class RoomController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long roomId
     ) {
-        Room room = roomService.getRoom(memberId, roomId);
+        Room room = roomApplicationService.getRoom(memberId, roomId);
         RoomResponse roomResponse = roomResponseAssembler.toDisplayableRoom(room);
         return ApiResponse.successFrom(roomResponse);
     }

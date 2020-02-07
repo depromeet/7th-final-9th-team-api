@@ -8,22 +8,22 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
-class JwtServiceTest {
-    private JwtService tokenService;
-    private JwtService anotherIssuerJwtService;
-    private JwtService anotherSigningKeyJwtService;
+class JwtApplicationServiceTest {
+    private JwtApplicationService tokenService;
+    private JwtApplicationService anotherIssuerJwtService;
+    private JwtApplicationService anotherSigningKeyJwtService;
 
     @BeforeEach
     void setUp() {
-        tokenService = new JwtService(
+        tokenService = new JwtApplicationService(
                 "TOKEN_ISSUER",
                 "TOKEN_SIGNING_KEY"
         );
-        anotherIssuerJwtService = new JwtService(
+        anotherIssuerJwtService = new JwtApplicationService(
                 "ANOTHER_TOKEN_ISSUER",
                 "TOKEN_SIGNING_KEY"
         );
-        anotherSigningKeyJwtService = new JwtService(
+        anotherSigningKeyJwtService = new JwtApplicationService(
                 "TOKEN_ISSUER",
                 "ANOTHER_TOKEN_SINGING_KEY"
         );

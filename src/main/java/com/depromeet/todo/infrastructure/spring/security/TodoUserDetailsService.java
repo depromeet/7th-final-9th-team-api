@@ -1,6 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.member.LoginService;
+import com.depromeet.todo.application.member.LoginApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 public class TodoUserDetailsService implements UserDetailsService {
-    private final LoginService loginService;
+    private final LoginApplicationService loginApplicationService;
 
     @Override
     public MemberIdContainer loadUserByUsername(String kakaoAccessToken) {
@@ -16,7 +16,7 @@ public class TodoUserDetailsService implements UserDetailsService {
             throw new BadCredentialsException("'kakaoAccessToken' must not be null or empty");
         }
         return MemberIdContainer.from(
-                loginService.login(kakaoAccessToken).getMemberId()
+                loginApplicationService.login(kakaoAccessToken).getMemberId()
         );
     }
 }

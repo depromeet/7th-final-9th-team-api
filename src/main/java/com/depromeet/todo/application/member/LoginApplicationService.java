@@ -8,13 +8,13 @@ import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
-public class LoginService {
-    private final MemberService memberService;
+public class LoginApplicationService {
+    private final MemberApplicationService memberApplicationService;
 
     @Transactional
     public Member login(String accessToken) {
         Assert.hasText(accessToken, "'accessToken' must not be null, empty or blank");
 
-        return memberService.getOrCreateMember(accessToken);
+        return memberApplicationService.getOrCreateMember(accessToken);
     }
 }

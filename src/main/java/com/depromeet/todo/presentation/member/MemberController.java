@@ -1,6 +1,6 @@
 package com.depromeet.todo.presentation.member;
 
-import com.depromeet.todo.application.member.MemberService;
+import com.depromeet.todo.application.member.MemberApplicationService;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberApplicationService memberApplicationService;
     private final MemberResponseAssembler memberResponseAssembler;
 
     @GetMapping("/members/me")
@@ -21,7 +21,7 @@ public class MemberController {
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId
     ) {
-        Member member = memberService.getMember(memberId);
+        Member member = memberApplicationService.getMember(memberId);
         MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
         return ApiResponse.successFrom(memberResponse);
     }
@@ -32,7 +32,7 @@ public class MemberController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @RequestBody @Valid MemberUpdateRequest memberUpdateRequest
     ) {
-        Member member = memberService.updateMember(memberId, memberUpdateRequest.getName());
+        Member member = memberApplicationService.updateMember(memberId, memberUpdateRequest.getName());
         MemberResponse memberResponse = memberResponseAssembler.toDisplayableMember(member);
         return ApiResponse.successFrom(memberResponse);
     }

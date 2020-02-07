@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RoomService {
+public class RoomApplicationService {
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
     private final IdGenerator idGenerator;

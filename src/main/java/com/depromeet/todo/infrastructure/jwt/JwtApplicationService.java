@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.auth0.jwt.interfaces.Payload;
-import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.application.security.TokenApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,15 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class JwtService implements TokenService<Long> {
+public class JwtApplicationService implements TokenApplicationService<Long> {
     private static final String CLAIM_NAME_MEMBER_ID = "memberId";
 
     private final String tokenIssuer;
     private final Algorithm algorithm;
     private final JWTVerifier jwtVerifier;
 
-    public JwtService(@Value("${jwt.token-issuer}") String tokenIssuer,
-                      @Value("${jwt.token-signing-key}") String tokenSigningKey) {
+    public JwtApplicationService(@Value("${jwt.token-issuer}") String tokenIssuer,
+                                 @Value("${jwt.token-signing-key}") String tokenSigningKey) {
         this.tokenIssuer = tokenIssuer;
         this.algorithm = Algorithm.HMAC256(tokenSigningKey);
         this.jwtVerifier = JWT.require(algorithm).build();
