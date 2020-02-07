@@ -1,6 +1,6 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.application.security.TokenApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class PreAuthTokenAuthenticationProvider implements AuthenticationProvider {
-    private final TokenService<Long> tokenService;
+    private final TokenApplicationService<Long> tokenApplicationService;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
@@ -23,7 +23,7 @@ public class PreAuthTokenAuthenticationProvider implements AuthenticationProvide
             return null;
         }
         String accessToken = (String) principal;
-        Optional<Long> memberIdOptional = tokenService.decode(accessToken);
+        Optional<Long> memberIdOptional = tokenApplicationService.decode(accessToken);
         if (!memberIdOptional.isPresent()) {
             return null;
         }

@@ -1,6 +1,6 @@
 package com.depromeet.todo.presentation.furniture;
 
-import com.depromeet.todo.application.furniture.FurnitureService;
+import com.depromeet.todo.application.furniture.FurnitureApplicationService;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.furniture.FurnitureType;
 import com.depromeet.todo.presentation.common.ApiResponse;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class FurnitureController {
-    private final FurnitureService furnitureService;
+    private final FurnitureApplicationService furnitureApplicationService;
     private final FurnitureResponseAssembler furnitureResponseAssembler;
 
     @PostMapping("/rooms/{roomId}/furnitures")
@@ -27,7 +27,7 @@ public class FurnitureController {
             @PathVariable Long roomId,
             @RequestBody @Valid CreateFurnitureRequest createFurnitureRequest
     ) {
-        Furniture furniture = furnitureService.createFurniture(
+        Furniture furniture = furnitureApplicationService.createFurniture(
                 memberId,
                 roomId,
                 FurnitureType.fromName(createFurnitureRequest.getFurnitureType())
@@ -45,7 +45,7 @@ public class FurnitureController {
             @PathVariable Long roomId,
             @ApiIgnore @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<FurnitureResponse> furniturePage = furnitureService.getFurnitures(memberId, roomId, pageable)
+        Page<FurnitureResponse> furniturePage = furnitureApplicationService.getFurnitures(memberId, roomId, pageable)
                 .map(furnitureResponseAssembler::toDisplayableFurniture);
         return ApiResponse.successFrom(furniturePage);
     }
@@ -57,7 +57,7 @@ public class FurnitureController {
             @PathVariable Long roomId,
             @PathVariable Long furnitureId
     ) {
-        Furniture furniture = furnitureService.getFurniture(memberId, roomId, furnitureId);
+        Furniture furniture = furnitureApplicationService.getFurniture(memberId, roomId, furnitureId);
         FurnitureResponse furnitureResponse = furnitureResponseAssembler.toDisplayableFurniture(furniture);
         return ApiResponse.successFrom(furnitureResponse);
     }

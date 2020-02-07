@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberApplicationService {
     private final MemberRepository memberRepository;
     private final OAuthService kakaoUserService;
     private final MemberFactory memberFactory;

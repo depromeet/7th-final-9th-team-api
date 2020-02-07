@@ -1,8 +1,8 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.member.LoginService;
-import com.depromeet.todo.application.member.MemberService;
-import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.application.member.LoginApplicationService;
+import com.depromeet.todo.application.member.MemberApplicationService;
+import com.depromeet.todo.application.security.TokenApplicationService;
 import com.depromeet.todo.presentation.member.LoginResponseAssembler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +39,9 @@ import java.util.Collections;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper readObjectMapper;
     private final ObjectMapper writeObjectMapper;
-    private final TokenService<Long> tokenService;
-    private final LoginService loginService;
-    private final MemberService memberService;
+    private final TokenApplicationService<Long> tokenApplicationService;
+    private final LoginApplicationService loginApplicationService;
+    private final MemberApplicationService memberApplicationService;
     private final LoginResponseAssembler loginResponseAssembler;
 
     @Override
@@ -96,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PreAuthTokenAuthenticationProvider preAuthTokenAuthenticationProvider() {
-        return new PreAuthTokenAuthenticationProvider(tokenService);
+        return new PreAuthTokenAuthenticationProvider(tokenApplicationService);
     }
 
     @Bean
@@ -108,7 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService todoUserDetailsService() {
-        return new TodoUserDetailsService(loginService);
+        return new TodoUserDetailsService(loginApplicationService);
     }
 
     @Bean
@@ -130,8 +130,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler() {
         return new JsonAuthenticationSuccessHandler(
                 writeObjectMapper,
-                tokenService,
-                memberService,
+                tokenApplicationService,
+                memberApplicationService,
                 loginResponseAssembler
         );
     }

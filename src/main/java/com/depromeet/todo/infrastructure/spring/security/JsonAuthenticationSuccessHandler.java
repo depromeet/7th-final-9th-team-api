@@ -1,7 +1,7 @@
 package com.depromeet.todo.infrastructure.spring.security;
 
-import com.depromeet.todo.application.member.MemberService;
-import com.depromeet.todo.application.security.TokenService;
+import com.depromeet.todo.application.member.MemberApplicationService;
+import com.depromeet.todo.application.security.TokenApplicationService;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import com.depromeet.todo.presentation.member.LoginResponse;
 import com.depromeet.todo.presentation.member.LoginResponseAssembler;
@@ -19,8 +19,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final ObjectMapper writeObjectMapper;
-    private final TokenService<Long> tokenService;
-    private final MemberService memberService;
+    private final TokenApplicationService<Long> tokenApplicationService;
+    private final MemberApplicationService memberApplicationService;
     private final LoginResponseAssembler loginResponseAssembler;
 
     @Override
@@ -32,8 +32,8 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
         Long memberId = todoAuthenticationToken.getMemberId();
 
         LoginResponse loginResponse = loginResponseAssembler.toLoginResponse(
-                tokenService.generate(memberId),
-                memberService.getMember(memberId)
+                tokenApplicationService.generate(memberId),
+                memberApplicationService.getMember(memberId)
         );
 
         response.setStatus(HttpStatus.OK.value());
