@@ -1,8 +1,8 @@
 package com.depromeet.todo.application.room;
 
 import com.depromeet.todo.application.BadRequestException;
-import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.IdGenerator;
+import com.depromeet.todo.domain.ResourceNotFoundException;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.member.MemberRepository;

@@ -1,7 +1,7 @@
 package com.depromeet.todo.application.furniture;
 
-import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.IdGenerator;
+import com.depromeet.todo.domain.ResourceNotFoundException;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.furniture.FurnitureRepository;
 import com.depromeet.todo.domain.furniture.FurnitureType;

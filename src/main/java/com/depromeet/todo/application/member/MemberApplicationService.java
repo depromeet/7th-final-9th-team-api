@@ -1,9 +1,9 @@
 package com.depromeet.todo.application.member;
 
 import com.depromeet.todo.application.BadRequestException;
-import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.member.MemberFactory;
+import com.depromeet.todo.domain.member.MemberNotFoundException;
 import com.depromeet.todo.domain.member.MemberRepository;
 import com.depromeet.todo.domain.member.oauth.OAuthAccessToken;
 import com.depromeet.todo.domain.member.oauth.OAuthService;
@@ -36,7 +36,7 @@ public class MemberApplicationService {
         BadRequestException.nonNull(memberId, "'memberId' must not be null");
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("Member not found. memberId:" + memberId));
+                .orElseThrow(() -> new MemberNotFoundException("Member not found. memberId:" + memberId));
     }
 
     @Transactional
@@ -45,6 +45,16 @@ public class MemberApplicationService {
 
         return memberRepository.findById(memberId)
                 .map(it -> it.updateName(name))
-                .orElseThrow(() -> new ResourceNotFoundException("Member not found. memberId:" + memberId));
+                .orElseThrow(() -> new MemberNotFoundException("Member not found. memberId:" + memberId));
+    }
+
+    @Transactional
+    public Member updateProfileImage(Long memberId, String profileImageUrl) {
+        BadRequestException.nonNull(memberId, "'memberId' must not be null");
+        BadRequestException.nonNull(profileImageUrl, "'profileImageUrl' must not be null");
+
+        return memberRepository.findById(memberId)
+                .map(it -> it.updateProfileImage(profileImageUrl))
+                .orElseThrow(() -> new MemberNotFoundException("Member not found. memberId:" + memberId));
     }
 }

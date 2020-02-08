@@ -1,4 +1,4 @@
-package com.depromeet.todo.application;
+package com.depromeet.todo.domain;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

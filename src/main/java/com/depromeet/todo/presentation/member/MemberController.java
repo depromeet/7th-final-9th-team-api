@@ -3,6 +3,7 @@ package com.depromeet.todo.presentation.member;
 import com.depromeet.todo.application.member.MemberApplicationService;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.presentation.common.ApiResponse;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -18,6 +19,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ApiResponse<MemberResponse> getMe(
+            @ApiParam(name = "Authorization", required = true)
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId
     ) {
@@ -28,6 +30,7 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ApiResponse<MemberResponse> updateMe(
+            @ApiParam(name = "Authorization", required = true)
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @RequestBody @Valid MemberUpdateRequest memberUpdateRequest

@@ -53,7 +53,7 @@ public class AwsS3StorageService implements StorageService {
 
     private InputStream createThumbnailIfImage(MediaType mediaType, InputStream inputStream) throws IOException {
         if (!mediaType.isCompatibleWith(MimeType.valueOf("image/*"))) {
-            throw new IllegalArgumentException("It's not allowed type. mediaType must be compatible with 'image/*'. mediaType: " + mediaType);
+            throw new IllegalArgumentException("It's not allowed type. 'mediaType' must be compatible with 'image/*'. mediaType: " + mediaType);
         }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         thumbnailService.createThumbnail(inputStream, byteArrayOutputStream);
