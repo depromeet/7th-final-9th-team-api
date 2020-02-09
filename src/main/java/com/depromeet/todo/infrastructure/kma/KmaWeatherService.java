@@ -2,6 +2,7 @@ package com.depromeet.todo.infrastructure.kma;
 
 import com.depromeet.todo.application.weather.WeatherAssembler;
 import com.depromeet.todo.domain.location.Location;
+import com.depromeet.todo.domain.weather.PrecipitationType;
 import com.depromeet.todo.domain.weather.Weather;
 import com.depromeet.todo.domain.weather.WeatherService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,13 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
 public class KmaWeatherService implements WeatherService {
     private static final ParameterizedTypeReference<KmaApiResult<CurrentKmaApiWeatherItem>> PTR_KMA_API_RESPONSE_CURRENT_WEATHER_ITEM;
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     static {
         PTR_KMA_API_RESPONSE_CURRENT_WEATHER_ITEM = new ParameterizedTypeReference<KmaApiResult<CurrentKmaApiWeatherItem>>() {
@@ -37,19 +40,26 @@ public class KmaWeatherService implements WeatherService {
     private final String kmaHost;
     private final String currentWeatherPath;
     private final WeatherAssembler<KmaApiResult<CurrentKmaApiWeatherItem>> kmaWeatherAssembler;
+    private final String strategy;
 
     public KmaWeatherService(@Qualifier("kmaRestTemplate") RestTemplate kmaRestTemplate,
                              @Value("${weather.kma.host}") String kmaHost,
                              @Value("${weather.kma.path.current}") String currentWeatherPath,
-                             @Qualifier("kmaWeatherAssembler") WeatherAssembler<KmaApiResult<CurrentKmaApiWeatherItem>> kmaWeatherAssembler) {
+                             @Qualifier("kmaWeatherAssembler") WeatherAssembler<KmaApiResult<CurrentKmaApiWeatherItem>> kmaWeatherAssembler,
+                             @Value("${weather.kma.strategy}") String strategy) {
         this.kmaRestTemplate = kmaRestTemplate;
         this.kmaHost = kmaHost;
         this.currentWeatherPath = currentWeatherPath;
         this.kmaWeatherAssembler = kmaWeatherAssembler;
+        this.strategy = strategy;
     }
 
     @Override
     public Weather getCurrentWeather(Location location, LocalDateTime now) {
+        if ("random".equalsIgnoreCase(strategy)) {
+            return Weather.of(PrecipitationType.values()[RANDOM.nextInt(3)]);
+        }
+
         URI requestUrl = UriComponentsBuilder.fromHttpUrl(kmaHost)
                 .path(currentWeatherPath)
                 .queryParams(new KmaWeatherQueryParamBuilder()
