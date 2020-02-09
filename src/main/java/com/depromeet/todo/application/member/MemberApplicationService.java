@@ -49,12 +49,12 @@ public class MemberApplicationService {
     }
 
     @Transactional
-    public Member updateProfileImage(Long memberId, String profileImageUrl) {
+    public Member updateProfileImage(Long memberId, String profileImage) {
         BadRequestException.nonNull(memberId, "'memberId' must not be null");
-        BadRequestException.nonNull(profileImageUrl, "'profileImageUrl' must not be null");
+        BadRequestException.nonNull(profileImage, "'profileImage' must not be null");
 
         return memberRepository.findById(memberId)
-                .map(it -> it.updateProfileImage(profileImageUrl))
+                .map(it -> it.updateProfileImage(profileImage))
                 .orElseThrow(() -> new MemberNotFoundException("Member not found. memberId:" + memberId));
     }
 }

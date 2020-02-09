@@ -11,7 +11,7 @@ public class MemberResponse implements Displayable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     private String name;
-    private String profileImageUrl;
+    private String profileImage;
     private String providerType;
     private String providerUserId;
     private LocalDateTime createdAt;
