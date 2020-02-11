@@ -35,7 +35,6 @@ public class FurnitureApplicationService {
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
         Furniture furniture = Furniture.of(
-                idGenerator,
                 member.getMemberId(),
                 room,
                 furnitureType
@@ -81,9 +80,20 @@ public class FurnitureApplicationService {
 
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
-        return furnitureRepository.findByFurnitureIdAndMemberIdAndRoom(furnitureId, member.getMemberId(), room)
+        return furnitureRepository.findByIdAndMemberIdAndRoom(furnitureId, member.getMemberId(), room)
                 .orElseThrow(() -> {
                     log.warn("Furniture not found. furnitureId: {}, member: {}, room: {}", furnitureId, member, room);
+                    return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public Furniture getFurniture(Long furnitureId) {
+        Assert.notNull(furnitureId, "'furnitureId' must not be null");
+
+        return furnitureRepository.findById(furnitureId)
+                .orElseThrow(() -> {
+                    log.warn("Furniture not found. furnitureId: {}", furnitureId);
                     return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);
                 });
     }

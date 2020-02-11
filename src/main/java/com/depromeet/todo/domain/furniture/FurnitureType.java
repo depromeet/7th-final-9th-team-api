@@ -14,7 +14,8 @@ public enum FurnitureType {
     DRESSING_TABLE("dressing-table"),
     UNKNOWN("");
 
-    public static final Set<FurnitureType> AVAILABLE_SET = Arrays.stream(FurnitureType.values()).collect(Collectors.toSet());
+    public static final Set<FurnitureType> AVAILABLE_SET = Arrays.stream(FurnitureType.values())
+                                                                 .collect(Collectors.toSet());
 
     private final String name;
 

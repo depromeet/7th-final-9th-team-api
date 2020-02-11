@@ -12,7 +12,7 @@ public class FurnitureResponseAssembler implements DisplayableFurnitureAssembler
             return null;
         }
         FurnitureResponse furnitureResponse = new FurnitureResponse();
-        furnitureResponse.setId(furniture.getFurnitureId());
+        furnitureResponse.setId(furniture.getId());
         furnitureResponse.setType(furniture.getFurnitureType().getName());
         furnitureResponse.setCreatedAt(furniture.getCreatedAt());
         furnitureResponse.setUpdatedAt(furniture.getUpdatedAt());
