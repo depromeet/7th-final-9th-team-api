@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -54,6 +55,15 @@ public class TasksController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long roomId) {
         return null;
+    }
+
+    @PostMapping("/tasks/{taskId}")
+    public ResponseEntity completeTask(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long taskId) {
+        tasksApplicationService.completeTask(memberId, taskId);
+        return ResponseEntity.ok().build();
     }
 }
 

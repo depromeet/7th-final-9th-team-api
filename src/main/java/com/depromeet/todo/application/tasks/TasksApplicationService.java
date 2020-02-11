@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,5 +63,11 @@ public class TasksApplicationService {
                                         .flatMap(it -> it.getTasks().stream())
                                         .collect(Collectors.toList());
         return tasks;
+    }
+
+    public void completeTask(Long memberId, Long taskId) {
+        Tasks task = taskRepository.findByIdAndMemberId(taskId, memberId)
+                                   .orElseThrow(() -> new NotFoundTaskException(taskId));
+        task.done();
     }
 }

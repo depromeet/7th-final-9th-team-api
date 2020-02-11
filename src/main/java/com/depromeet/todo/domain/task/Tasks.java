@@ -61,6 +61,10 @@ public class Tasks {
         return new Tasks(memberId, furniture, TaskState.TODO, contents, order, deadline);
     }
 
+    public void done() {
+        state = TaskState.DONE;
+    }
+
     public enum TaskState {
         TODO, DONE
     }
