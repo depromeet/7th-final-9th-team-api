@@ -1,6 +1,7 @@
 package com.depromeet.todo.domain.room;
 
 import com.depromeet.todo.domain.IdGenerator;
+import com.depromeet.todo.domain.furniture.Furniture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,7 +29,7 @@ public class RoomFactory {
 
         return RoomType.AVAILABLE_TYPES.stream()
                 .filter(it -> !existTypes.contains(it))
-                .map(it -> this.createRoom(memberId, it))
+                .map(it -> createRoom(memberId, it))
                 .collect(Collectors.toList());
     }
 
@@ -46,6 +47,20 @@ public class RoomFactory {
         applicationEventPublisher.publishEvent(
                 RoomCreatedEvent.of(this, room.getRoomId())
         );
+        return room;
+    }
+
+    public Room createRoom(Long memberId, RoomType roomType, List<Furniture> furnitures) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomType, "'roomType' must not be null");
+
+        Room room = new Room(
+                snowFlakeIdGenerator.generate(),
+                memberId,
+                roomType
+        );
+        room.arrangeFurniture(furnitures);
+        roomRepository.save(room);
         return room;
     }
 }

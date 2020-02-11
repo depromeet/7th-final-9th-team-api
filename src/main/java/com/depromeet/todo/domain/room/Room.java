@@ -1,5 +1,6 @@
 package com.depromeet.todo.domain.room;
 
+import com.depromeet.todo.domain.furniture.Furniture;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,14 +9,16 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@ToString
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@ToString(of = "roomId")
 public class Room {
     @Id
     private Long roomId;
@@ -27,6 +30,9 @@ public class Room {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Furniture> furnitures = new ArrayList<>();
+
     Room(Long roomId,
          Long memberId,
          RoomType type) {
@@ -36,14 +42,23 @@ public class Room {
         this.validate();
     }
 
+    void arrangeFurniture(List<Furniture> furniture) {
+        furniture.forEach(this::arrangeFurniture);
+    }
+
+    private void arrangeFurniture(Furniture furniture) {
+        furniture.addRoom(this);
+        furnitures.add(furniture);
+    }
+
     private void validate() {
         Assert.notNull(roomId, "'roomId' must not be null");
         Assert.notNull(memberId, "memberId");
         Assert.notNull(type, "'type' must not be null");
         if (type == RoomType.UNKNOWN) {
             String availableTypes = RoomType.AVAILABLE_TYPES.stream()
-                    .map(RoomType::getName)
-                    .collect(Collectors.joining(", ", "[", "]"));
+                                                            .map(RoomType::getName)
+                                                            .collect(Collectors.joining(", ", "[", "]"));
             throw new IllegalRoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
         }
     }

@@ -2,7 +2,6 @@ package com.depromeet.todo.application.room;
 
 import com.depromeet.todo.application.BadRequestException;
 import com.depromeet.todo.application.ResourceNotFoundException;
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.member.MemberRepository;
@@ -25,7 +24,6 @@ import org.springframework.util.Assert;
 public class RoomApplicationService {
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
-    private final IdGenerator idGenerator;
     private final RoomFactory roomFactory;
 
     @Transactional
