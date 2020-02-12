@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -50,16 +51,12 @@ public class RoomFactory {
         return room;
     }
 
+    @Transactional
     public Room createRoom(Long memberId, RoomType roomType, List<Furniture> furnitures) {
         Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(roomType, "'roomType' must not be null");
 
-        Room room = new Room(
-                snowFlakeIdGenerator.generate(),
-                memberId,
-                roomType
-        );
-        room.arrangeFurniture(furnitures);
+        Room room = Room.of(snowFlakeIdGenerator.generate(), memberId, roomType, furnitures);
         roomRepository.save(room);
         return room;
     }

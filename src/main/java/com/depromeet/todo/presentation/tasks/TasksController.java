@@ -1,7 +1,6 @@
 package com.depromeet.todo.presentation.tasks;
 
 import com.depromeet.todo.application.tasks.TasksApplicationService;
-import com.depromeet.todo.domain.task.Tasks;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,17 +23,16 @@ public class TasksController {
 
     @PostMapping("/furniture/{furnitureId}/task")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<TaskResponse> createRoom(
+    public ApiResponse<Long> createRoom(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long furnitureId,
             @RequestBody @Valid CreateTaskRequest createTaskRequest) {
 
-        Tasks task = tasksApplicationService.createTask(memberId,
-                                                        furnitureId,
-                                                        createTaskRequest.getContents());
-        TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
-        return ApiResponse.successFrom(taskResponse);
+        long task = tasksApplicationService.createTask(memberId,
+                                                       furnitureId,
+                                                       createTaskRequest.getContents());
+        return ApiResponse.successFrom(task);
     }
 
     @GetMapping("/tasks")
@@ -63,6 +61,7 @@ public class TasksController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long taskId) {
         tasksApplicationService.completeTask(memberId, taskId);
+
         return ResponseEntity.ok().build();
     }
 }

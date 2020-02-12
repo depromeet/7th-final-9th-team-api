@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @EntityListeners(AuditingEntityListener.class)
 @ToString(of = "roomId")
 public class Room {
+
     @Id
     private Long roomId;
     private Long memberId;
@@ -30,10 +32,10 @@ public class Room {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Furniture> furnitures = new ArrayList<>();
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<Furniture> furniture = new ArrayList<>();
 
-    Room(Long roomId,
+    public Room(Long roomId,
          Long memberId,
          RoomType type) {
         this.roomId = roomId;
@@ -42,13 +44,15 @@ public class Room {
         this.validate();
     }
 
-    void arrangeFurniture(List<Furniture> furniture) {
-        furniture.forEach(this::arrangeFurniture);
+    public static Room of(Long roomId, Long memberId, RoomType roomType, List<Furniture> furniture) {
+        Room room = new Room(roomId, memberId, roomType);
+        furniture.forEach(room::arrangeFurniture);
+        return room;
     }
 
     private void arrangeFurniture(Furniture furniture) {
         furniture.addRoom(this);
-        furnitures.add(furniture);
+        this.furniture.add(furniture);
     }
 
     private void validate() {

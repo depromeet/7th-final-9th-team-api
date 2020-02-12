@@ -38,7 +38,7 @@ public class Furniture {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "furniture", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
     private List<Tasks> tasks = new ArrayList<>();
 
     private Furniture(Long memberId,
@@ -81,11 +81,11 @@ public class Furniture {
         }
     }
 
-    public long registerTask(Long memberId, String contents) {
-        int order = tasks.size() + ORDER_OF_INCREASE;
-        Tasks tasks = Tasks.create(memberId, this, contents, order);
+    public Tasks registerTask(Long memberId, String contents) {
+        int order = this.tasks.size() + ORDER_OF_INCREASE;
+        Tasks tasks = Tasks.of(memberId, this, contents, order);
         this.tasks.add(tasks);
-        return tasks.getId();
+        return tasks;
     }
 
     public void addRoom(Room room) {

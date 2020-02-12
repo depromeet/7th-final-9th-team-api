@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.depromeet.todo.domain.task.Tasks.TaskState.TODO;
+
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TasksApplicationService {
 
@@ -29,14 +32,14 @@ public class TasksApplicationService {
     private final TaskRepository taskRepository;
 
     @Transactional
-    public Tasks createTask(Long memberId,
-                            Long furnitureId,
-                            String contents) {
+    public long createTask(Long memberId,
+                              Long furnitureId,
+                              String contents) {
         memberApplicationService.getMember(memberId);
         Furniture furniture = furnitureApplicationService.getFurniture(furnitureId);
 
-        long newTask = furniture.registerTask(memberId, contents);
-        return taskRepository.getOne(newTask);
+        Tasks tasks = furniture.registerTask(memberId, contents);
+        return tasks.getId();
     }
 
     @Transactional(readOnly = true)
@@ -45,8 +48,8 @@ public class TasksApplicationService {
         Assert.notNull(pageable, "'pageable' must not be null");
 
         Member member = memberApplicationService.getMember(memberId);
-        return taskRepository.getByMemberIdAndStateOrderByOrder(member.getMemberId(),
-                                                                  Tasks.TaskState.TODO,
+        return taskRepository.getByMemberIdAndStateOrderByOrdered(member.getMemberId(),
+                                                                  TODO,
                                                                   pageable);
     }
 
@@ -56,12 +59,13 @@ public class TasksApplicationService {
                                           .getTasks();
     }
 
+    @Transactional(readOnly = true)
     public List<Tasks> getTasksByRoom(Long memberId, Long roomId) {
         Room room = roomApplicationService.getRoom(memberId, roomId);
-        List<Furniture> furnitures = room.getFurnitures();
+        List<Furniture> furnitures = room.getFurniture();
         List<Tasks> tasks = furnitures.stream()
-                                        .flatMap(it -> it.getTasks().stream())
-                                        .collect(Collectors.toList());
+                                      .flatMap(it -> it.getTasks().stream())
+                                      .collect(Collectors.toList());
         return tasks;
     }
 
@@ -69,5 +73,11 @@ public class TasksApplicationService {
         Tasks task = taskRepository.findByIdAndMemberId(taskId, memberId)
                                    .orElseThrow(() -> new NotFoundTaskException(taskId));
         task.done();
+    }
+
+    public List<Tasks> changeCompleteTaskOverDeadline(LocalDateTime now) {
+        List<Tasks> tasks = taskRepository.findByStateAndDeadlineBefore(TODO, now);
+        tasks.forEach(Tasks::done);
+        return tasks;
     }
 }

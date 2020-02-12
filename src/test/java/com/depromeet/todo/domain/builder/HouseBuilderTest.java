@@ -1,8 +1,6 @@
 package com.depromeet.todo.domain.builder;
 
 import com.depromeet.todo.domain.HouseBuilder;
-import com.depromeet.todo.domain.IdGenerator;
-import com.depromeet.todo.domain.furniture.FurnitureRepository;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -37,11 +35,11 @@ class HouseBuilderTest {
     @Test
     void build() {
         List<Room> rooms = houseBuilder.build(1L);
-        log.info("Furniture : {}", rooms.get(0).getFurnitures());
+        log.info("Furniture : {}", rooms.get(0).getFurniture());
 
 
         Optional<Room> temp = roomRepository.findById(rooms.get(0)
                                                            .getRoomId());
-        assertThat(temp.get().getFurnitures()).hasSize(5);
+        assertThat(temp.get().getFurniture()).hasSize(5);
     }
 }

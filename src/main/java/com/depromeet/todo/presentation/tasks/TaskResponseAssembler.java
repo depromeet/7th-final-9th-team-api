@@ -15,7 +15,7 @@ public class TaskResponseAssembler implements DisplayableTaskAssembler {
         return TaskResponse.builder()
                     .id(task.getId())
                     .state(task.getState())
-                    .order(task.getOrder())
+                    .order(task.getOrdered())
                     .deadline(task.getDeadline())
                     .createdAt(task.getCreatedAt())
                     .build();

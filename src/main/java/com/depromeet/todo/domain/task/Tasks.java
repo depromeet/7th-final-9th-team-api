@@ -9,28 +9,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = "id")
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Tasks {
 
-    public static final int DEADLINE_DAY_TO_INCREMENT = 1;
-    public static final int DEADLINE_HOUR = 0;
-    public static final int DEADLINE_MIN = 0;
     @Id
-    @GeneratedValue
-    private long id;
-    private long memberId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column
+    private Long memberId;
     @ManyToOne
-    @JoinColumn(name = "furniture_id", nullable = false)
+    @JoinColumn(name = "furniture_id")
     private Furniture furniture;
+    @Enumerated(EnumType.STRING)
     private TaskState state;
+    @Column
     private String contents;
-    private Integer order;
+    @Column
+    private Integer ordered;
+    @Column
     private LocalDateTime deadline;
     @CreatedDate
     private LocalDateTime createdAt;
@@ -41,23 +44,25 @@ public class Tasks {
                   Furniture furniture,
                   TaskState state,
                   String contents,
-                  Integer order,
+                  Integer ordered,
                   LocalDateTime deadline) {
         this.memberId = memberId;
         this.furniture = furniture;
         this.state = state;
         this.contents = contents;
-        this.order = order;
+        this.ordered = ordered;
         this.deadline = deadline;
+        this.createdAt = null;
+        this.updatedAt = null;
     }
 
-    public static Tasks create(long memberId,
-                               Furniture furniture,
-                               String contents,
-                               int order) {
-        LocalDateTime deadline = LocalDate.now()
-                                          .plusDays(DEADLINE_DAY_TO_INCREMENT)
-                                          .atTime(DEADLINE_HOUR, DEADLINE_MIN);
+    public static Tasks of(long memberId,
+                           Furniture furniture,
+                           String contents,
+                           int order) {
+//        LocalDateTime deadline = LocalDate.now()
+//                                          .atTime(LocalTime.MAX);
+        LocalDateTime deadline = LocalDateTime.now();
         return new Tasks(memberId, furniture, TaskState.TODO, contents, order, deadline);
     }
 
