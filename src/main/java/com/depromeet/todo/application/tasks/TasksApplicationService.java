@@ -59,16 +59,6 @@ public class TasksApplicationService {
                                           .getTasks();
     }
 
-    @Transactional(readOnly = true)
-    public List<Tasks> getTasksByRoom(Long memberId, Long roomId) {
-        Room room = roomApplicationService.getRoom(memberId, roomId);
-        List<Furniture> furnitures = room.getFurniture();
-        List<Tasks> tasks = furnitures.stream()
-                                      .flatMap(it -> it.getTasks().stream())
-                                      .collect(Collectors.toList());
-        return tasks;
-    }
-
     public void completeTask(Long memberId, Long taskId) {
         Tasks task = taskRepository.findByIdAndMemberId(taskId, memberId)
                                    .orElseThrow(() -> new NotFoundTaskException(taskId));

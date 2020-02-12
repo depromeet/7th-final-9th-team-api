@@ -45,12 +45,11 @@ public class RoomApplicationService {
         Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(roomId, "'roomId' must not be null");
 
-        Member member = this.getMember(memberId);
-        return roomRepository.findByRoomIdAndMemberId(roomId, member.getMemberId())
-                .orElseThrow(() -> {
-                    log.warn("Room not found. roomId: {}, member: {}", roomId, member);
-                    return new ResourceNotFoundException("Room not found");
-                });
+        return roomRepository.findByRoomIdAndMemberId(roomId, memberId)
+                                  .orElseThrow(() -> {
+                                      log.warn("Room not found. roomId: {}, member: {}", roomId, memberId);
+                                      return new ResourceNotFoundException("Room not found");
+                                  });
     }
 
     @Transactional(readOnly = true)
@@ -65,10 +64,10 @@ public class RoomApplicationService {
     private Member getMember(Long memberId) {
         assert memberId != null;
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> {
-                    log.warn("Member not found. memberId: {}", memberId);
-                    return new ResourceNotFoundException("Member not found. memberId: " + memberId);
-                });
+                               .orElseThrow(() -> {
+                                   log.warn("Member not found. memberId: {}", memberId);
+                                   return new ResourceNotFoundException("Member not found. memberId: " + memberId);
+                               });
     }
 
     @EventListener
