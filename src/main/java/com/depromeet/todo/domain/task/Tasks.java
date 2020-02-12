@@ -70,6 +70,10 @@ public class Tasks {
         state = TaskState.DONE;
     }
 
+    public boolean isTodo() {
+        return state == TaskState.TODO;
+    }
+
     public enum TaskState {
         TODO, DONE
     }

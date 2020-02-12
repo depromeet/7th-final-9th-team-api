@@ -33,8 +33,8 @@ public class TasksApplicationService {
 
     @Transactional
     public long createTask(Long memberId,
-                              Long furnitureId,
-                              String contents) {
+                           Long furnitureId,
+                           String contents) {
         memberApplicationService.getMember(memberId);
         Furniture furniture = furnitureApplicationService.getFurniture(furnitureId);
 
@@ -68,6 +68,17 @@ public class TasksApplicationService {
     public List<Tasks> changeCompleteTaskOverDeadline(LocalDateTime now) {
         List<Tasks> tasks = taskRepository.findByStateAndDeadlineBefore(TODO, now);
         tasks.forEach(Tasks::done);
+        return tasks;
+    }
+
+    public List<Tasks> getTasksByRoom(Long memberId, Long roomId) {
+        Room room = roomApplicationService.getRoom(memberId, roomId);
+        List<Tasks> tasks = room.getFurniture()
+                                .stream()
+                                .flatMap(it -> it.getTasks()
+                                                 .stream())
+                                .filter(Tasks::isTodo)
+                                .collect(Collectors.toList());
         return tasks;
     }
 }

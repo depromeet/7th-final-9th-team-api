@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -52,7 +54,11 @@ public class TasksController {
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long roomId) {
-        return null;
+        List<TaskResponse> tasks = tasksApplicationService.getTasksByRoom(memberId, roomId)
+                                                            .stream()
+                                                            .map(taskResponseAssembler::toDisplayableTask)
+                                                            .collect(Collectors.toList());
+        return ApiResponse.successFrom(tasks);
     }
 
     @PostMapping("/tasks/{taskId}")
@@ -62,7 +68,8 @@ public class TasksController {
             @PathVariable Long taskId) {
         tasksApplicationService.completeTask(memberId, taskId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                             .build();
     }
 }
 
