@@ -2,33 +2,40 @@ package com.depromeet.todo.domain;
 
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.furniture.FurnitureType;
+import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomFactory;
 import com.depromeet.todo.domain.room.RoomType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.depromeet.todo.domain.furniture.FurnitureType.*;
-import static com.depromeet.todo.domain.room.RoomType.BEDROOM;
+import static com.depromeet.todo.domain.room.RoomType.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HouseBuilder {
+public class HouseFactory {
 
     private final RoomFactory roomFactory;
 
-    public List<Room> build(Long memberId) {
+    @Transactional
+    @EventListener
+    public List<Room> build(MemberCreatedEvent memberCreatedEvent) {
+        Assert.notNull(memberCreatedEvent, "'memberCreatedEvent' must not be null");
+        Long memberId = memberCreatedEvent.getMemberId();
         return Arrays.stream(BasicItem.values())
                                    .map(item -> {
                                        List<Furniture> furnitures = makeFurniture(memberId, item);
-                                       Room room = roomFactory.createRoom(memberId, item.roomType, furnitures);
-                                       return room;
+                                       return roomFactory.createRoom(memberId, item.roomType, furnitures);
                                    })
                                    .collect(Collectors.toList());
     }
@@ -40,7 +47,10 @@ public class HouseBuilder {
     }
 
     enum BasicItem {
-        DEFAULT_ROOM(BEDROOM, BED, CLOSET, DESK, WASTE_BIN, DRESSING_TABLE);
+        OPTION1(BEDROOM, BED, CLOSET, DESK, WASTE_BIN, DRESSING_TABLE),
+        OPTION2(LIVING_ROOM),
+        OPTION3(KITCHEN),
+        OPTION4(BATHROOM);
 
         private RoomType roomType;
         private FurnitureType[] furnitureTypes;

@@ -3,7 +3,6 @@ package com.depromeet.todo.application.room;
 import com.depromeet.todo.application.BadRequestException;
 import com.depromeet.todo.application.ResourceNotFoundException;
 import com.depromeet.todo.domain.member.Member;
-import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.member.MemberRepository;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomFactory;
@@ -11,7 +10,6 @@ import com.depromeet.todo.domain.room.RoomRepository;
 import com.depromeet.todo.domain.room.RoomType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -68,15 +66,5 @@ public class RoomApplicationService {
                                    log.warn("Member not found. memberId: {}", memberId);
                                    return new ResourceNotFoundException("Member not found. memberId: " + memberId);
                                });
-    }
-
-    @EventListener
-    @Transactional
-    public void createInitialRooms(MemberCreatedEvent memberCreatedEvent) {
-        Assert.notNull(memberCreatedEvent, "'memberCreatedEvent' must not be null");
-
-        roomFactory.createInitialRooms(
-                memberCreatedEvent.getMemberId()
-        );
     }
 }

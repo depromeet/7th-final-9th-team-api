@@ -44,10 +44,6 @@ public class RoomFactory {
                 roomType
         );
         roomRepository.save(room);
-
-        applicationEventPublisher.publishEvent(
-                RoomCreatedEvent.of(this, room.getRoomId())
-        );
         return room;
     }
 
