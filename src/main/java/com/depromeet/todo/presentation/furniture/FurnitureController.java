@@ -20,7 +20,7 @@ public class FurnitureController {
     private final FurnitureApplicationService furnitureApplicationService;
     private final FurnitureResponseAssembler furnitureResponseAssembler;
 
-    @PostMapping("/rooms/{roomId}/furnitures")
+    @PostMapping("/rooms/{roomId}/furniture")
     public ApiResponse<FurnitureResponse> createFurniture(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
@@ -48,17 +48,5 @@ public class FurnitureController {
         Page<FurnitureResponse> furniturePage = furnitureApplicationService.getFurnitures(memberId, roomId, pageable)
                 .map(furnitureResponseAssembler::toDisplayableFurniture);
         return ApiResponse.successFrom(furniturePage);
-    }
-
-    @GetMapping("/rooms/{roomId}/furnitures/{furnitureId}")
-    public ApiResponse<FurnitureResponse> getFurniture(
-            @RequestHeader(required = false, name = "Authorization") String authorization,
-            @ApiIgnore @ModelAttribute("memberId") Long memberId,
-            @PathVariable Long roomId,
-            @PathVariable Long furnitureId
-    ) {
-        Furniture furniture = furnitureApplicationService.getFurniture(memberId, roomId, furnitureId);
-        FurnitureResponse furnitureResponse = furnitureResponseAssembler.toDisplayableFurniture(furniture);
-        return ApiResponse.successFrom(furnitureResponse);
     }
 }

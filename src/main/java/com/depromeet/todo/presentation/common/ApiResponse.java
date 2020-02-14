@@ -36,7 +36,7 @@ public interface ApiResponse<T> {
             return new SuccessSimpleResponse<>(data, "room");
         }
         if (data instanceof FurnitureResponse) {
-            return new SuccessSimpleResponse<>(data, "furniture");
+            return new SuccessSimpleResponse<>(data, "furnitures");
         }
         if (data instanceof TaskResponse) {
             return new SuccessSimpleResponse<>(data, "task");

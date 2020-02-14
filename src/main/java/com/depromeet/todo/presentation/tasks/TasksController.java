@@ -23,7 +23,7 @@ public class TasksController {
     private final TasksApplicationService tasksApplicationService;
     private final TaskResponseAssembler taskResponseAssembler;
 
-    @PostMapping("/furniture/{furnitureId}/task")
+    @PostMapping("/furnitures/{furnitureId}/task")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<TaskResponse> createTask(
             @RequestHeader(required = false, name = "Authorization") String authorization,

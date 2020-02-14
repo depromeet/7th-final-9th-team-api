@@ -36,7 +36,7 @@ public class TasksApplicationService {
                             Long furnitureId,
                             String contents) {
         memberApplicationService.getMember(memberId);
-        Furniture furniture = furnitureApplicationService.getFurniture(furnitureId);
+        Furniture furniture = furnitureApplicationService.getFurnitures(furnitureId);
 
         Tasks task = furniture.registerTask(memberId, contents);
         return taskRepository.save(task);
@@ -51,12 +51,6 @@ public class TasksApplicationService {
         return taskRepository.findByMemberIdAndStateOrderByDisplayOrder(member.getMemberId(),
                                                                         TODO,
                                                                         pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Tasks> getTasksByFurniture(Long furnitureId) {
-        return furnitureApplicationService.getFurniture(furnitureId)
-                                          .getTasks();
     }
 
     public Tasks completeTask(Long memberId, Long taskId) {

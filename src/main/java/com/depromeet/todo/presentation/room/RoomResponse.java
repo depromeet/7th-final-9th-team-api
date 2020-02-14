@@ -15,7 +15,7 @@ public class RoomResponse implements Displayable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     private String type;
-    private List<FurnitureResponse> furniture = new ArrayList<>();
+    private List<FurnitureResponse> furnitures = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

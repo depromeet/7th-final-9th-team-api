@@ -1,17 +1,11 @@
 package com.depromeet.todo.domain.task;
 
-import com.depromeet.todo.domain.furniture.Furniture;
-import com.depromeet.todo.domain.furniture.FurnitureType;
-import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomRepository;
-import com.depromeet.todo.domain.room.RoomType;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Arrays;
 
 @DataJpaTest
 class TaskRepositoryTest {
@@ -27,11 +21,11 @@ class TaskRepositoryTest {
     // todo : test code
     @Test
     void findByStateAndDeadlineBefore() {
-/*        Furniture furniture = Furniture.of(1L, FurnitureType.BED);
-        Room room = Room.of(1L, 1L, RoomType.BEDROOM, Arrays.asList(furniture));
+/*        Furniture furnitures = Furniture.of(1L, FurnitureType.BED);
+        Room room = Room.of(1L, 1L, RoomType.BEDROOM, Arrays.asList(furnitures));
         roomRepository.save(room);
 
-        Tasks task = Tasks.of(1L, furniture,
+        Tasks task = Tasks.of(1L, furnitures,
                                   "잠자기", 0);
         taskRepository.save(task);
 
