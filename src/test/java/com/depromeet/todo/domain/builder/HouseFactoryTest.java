@@ -1,6 +1,7 @@
 package com.depromeet.todo.domain.builder;
 
 import com.depromeet.todo.domain.HouseFactory;
+import com.depromeet.todo.domain.member.MemberCreatedEvent;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -34,12 +35,14 @@ class HouseFactoryTest {
     @DisplayName("해당 계정에 기본으로 제공하는 집을 짓는다")
     @Test
     void build() {
-        List<Room> rooms = houseFactory.build(1L);
+        MemberCreatedEvent memberCreatedEvent = MemberCreatedEvent.of(new Object(), 1L);
+
+        List<Room> rooms = houseFactory.build(memberCreatedEvent);
         log.info("Furniture : {}", rooms.get(0).getFurniture());
 
 
         Optional<Room> temp = roomRepository.findById(rooms.get(0)
-                                                           .getRoomId());
+                                                           .getId());
         assertThat(temp.get().getFurniture()).hasSize(5);
     }
 }

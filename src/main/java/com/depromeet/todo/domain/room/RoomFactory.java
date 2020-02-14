@@ -43,8 +43,7 @@ public class RoomFactory {
                 memberId,
                 roomType
         );
-        roomRepository.save(room);
-        return room;
+        return roomRepository.save(room);
     }
 
     @Transactional
@@ -53,7 +52,6 @@ public class RoomFactory {
         Assert.notNull(roomType, "'roomType' must not be null");
 
         Room room = Room.of(snowFlakeIdGenerator.generate(), memberId, roomType, furnitures);
-        roomRepository.save(room);
-        return room;
+        return roomRepository.save(room);
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    Optional<Room> findByRoomIdAndMemberId(Long roomId, Long memberId);
+    Optional<Room> findByIdAndMemberId(Long roomId, Long memberId);
 
     boolean existsByMemberIdAndType(Long memberId, RoomType type);
 

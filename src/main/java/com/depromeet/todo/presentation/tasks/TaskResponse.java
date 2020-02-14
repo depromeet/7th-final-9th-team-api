@@ -1,7 +1,8 @@
 package com.depromeet.todo.presentation.tasks;
 
 import com.depromeet.todo.application.Displayable;
-import com.depromeet.todo.domain.task.Tasks;
+import com.depromeet.todo.domain.furniture.FurnitureType;
+import com.depromeet.todo.domain.task.TaskState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,9 @@ public class TaskResponse implements Displayable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
-    private Long furnitureId;
+    private FurnitureType furnitureType;
     private Integer order;
-    private Tasks.TaskState state;
+    private TaskState state;
     private LocalDateTime deadline;
     private LocalDateTime createdAt;
 }

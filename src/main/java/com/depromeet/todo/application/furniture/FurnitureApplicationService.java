@@ -1,7 +1,6 @@
 package com.depromeet.todo.application.furniture;
 
 import com.depromeet.todo.application.ResourceNotFoundException;
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.furniture.FurnitureRepository;
 import com.depromeet.todo.domain.furniture.FurnitureType;
@@ -23,7 +22,6 @@ import org.springframework.util.Assert;
 public class FurnitureApplicationService {
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
-    private final IdGenerator idGenerator;
     private final FurnitureRepository furnitureRepository;
 
     @Transactional
@@ -45,7 +43,7 @@ public class FurnitureApplicationService {
     private Room getRoom(Member owner, Long roomId) {
         assert owner != null;
         assert roomId != null;
-        return roomRepository.findByRoomIdAndMemberId(roomId, owner.getMemberId())
+        return roomRepository.findByIdAndMemberId(roomId, owner.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("Room not found. roomId: {}, member: {}", roomId, owner);
                     return new ResourceNotFoundException("Room not found. roomId: " + roomId);

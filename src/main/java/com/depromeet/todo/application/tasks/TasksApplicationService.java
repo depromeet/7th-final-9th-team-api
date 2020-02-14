@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.depromeet.todo.domain.task.Tasks.TaskState.TODO;
+import static com.depromeet.todo.domain.task.TaskState.TODO;
 
 @Service
 @Transactional
@@ -32,14 +32,14 @@ public class TasksApplicationService {
     private final TaskRepository taskRepository;
 
     @Transactional
-    public long createTask(Long memberId,
-                           Long furnitureId,
-                           String contents) {
+    public Tasks createTask(Long memberId,
+                            Long furnitureId,
+                            String contents) {
         memberApplicationService.getMember(memberId);
         Furniture furniture = furnitureApplicationService.getFurniture(furnitureId);
 
-        Tasks tasks = furniture.registerTask(memberId, contents);
-        return tasks.getId();
+        Tasks task = furniture.registerTask(memberId, contents);
+        return taskRepository.save(task);
     }
 
     @Transactional(readOnly = true)
@@ -48,9 +48,9 @@ public class TasksApplicationService {
         Assert.notNull(pageable, "'pageable' must not be null");
 
         Member member = memberApplicationService.getMember(memberId);
-        return taskRepository.getByMemberIdAndStateOrderByOrdered(member.getMemberId(),
-                                                                  TODO,
-                                                                  pageable);
+        return taskRepository.findByMemberIdAndStateOrderByDisplayOrder(member.getMemberId(),
+                                                                        TODO,
+                                                                        pageable);
     }
 
     @Transactional(readOnly = true)
@@ -59,10 +59,11 @@ public class TasksApplicationService {
                                           .getTasks();
     }
 
-    public void completeTask(Long memberId, Long taskId) {
+    public Tasks completeTask(Long memberId, Long taskId) {
         Tasks task = taskRepository.findByIdAndMemberId(taskId, memberId)
                                    .orElseThrow(() -> new NotFoundTaskException(taskId));
         task.done();
+        return task;
     }
 
     public List<Tasks> changeCompleteTaskOverDeadline(LocalDateTime now) {
@@ -73,12 +74,11 @@ public class TasksApplicationService {
 
     public List<Tasks> getTasksByRoom(Long memberId, Long roomId) {
         Room room = roomApplicationService.getRoom(memberId, roomId);
-        List<Tasks> tasks = room.getFurniture()
-                                .stream()
-                                .flatMap(it -> it.getTasks()
-                                                 .stream())
-                                .filter(Tasks::isTodo)
-                                .collect(Collectors.toList());
-        return tasks;
+        return room.getFurniture()
+                   .stream()
+                   .flatMap(it -> it.getTasks()
+                                    .stream())
+                   .filter(Tasks::isTodo)
+                   .collect(Collectors.toList());
     }
 }

@@ -36,7 +36,7 @@ public class FurnitureController {
         return ApiResponse.successFrom(furnitureResponse);
     }
 
-    @GetMapping("/me/rooms/{roomId}/furnitures")
+    @GetMapping("/rooms/{roomId}/furnitures")
     public ApiResponse<FurnitureResponse> getFurnitures(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @RequestParam(defaultValue = "0") int page,

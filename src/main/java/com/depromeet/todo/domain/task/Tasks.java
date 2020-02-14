@@ -13,14 +13,14 @@ import java.time.LocalTime;
 
 @Entity
 @Getter
-@ToString(of = "id")
+@ToString(exclude = "furniture")
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Tasks {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "task_id")
     private Long id;
     @Column
     private Long memberId;
@@ -32,7 +32,7 @@ public class Tasks {
     @Column
     private String contents;
     @Column
-    private Integer ordered;
+    private Integer displayOrder;
     @Column
     private LocalDateTime deadline;
     @CreatedDate
@@ -44,13 +44,13 @@ public class Tasks {
                   Furniture furniture,
                   TaskState state,
                   String contents,
-                  Integer ordered,
+                  Integer displayOrder,
                   LocalDateTime deadline) {
         this.memberId = memberId;
         this.furniture = furniture;
         this.state = state;
         this.contents = contents;
-        this.ordered = ordered;
+        this.displayOrder = displayOrder;
         this.deadline = deadline;
         this.createdAt = null;
         this.updatedAt = null;
@@ -59,11 +59,9 @@ public class Tasks {
     public static Tasks of(long memberId,
                            Furniture furniture,
                            String contents,
-                           int order) {
-//        LocalDateTime deadline = LocalDate.now()
-//                                          .atTime(LocalTime.MAX);
-        LocalDateTime deadline = LocalDateTime.now();
-        return new Tasks(memberId, furniture, TaskState.TODO, contents, order, deadline);
+                           int displayOrder) {
+        LocalDateTime deadline = LocalDate.now().atTime(LocalTime.MAX);
+        return new Tasks(memberId, furniture, TaskState.TODO, contents, displayOrder, deadline);
     }
 
     public void done() {
@@ -72,9 +70,5 @@ public class Tasks {
 
     public boolean isTodo() {
         return state == TaskState.TODO;
-    }
-
-    public enum TaskState {
-        TODO, DONE
     }
 }

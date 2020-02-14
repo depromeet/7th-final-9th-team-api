@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-@ToString(of = "roomId")
+@ToString(of = "id")
 public class Room {
 
     @Id
-    private Long roomId;
+    @Column(name = "room_id")
+    private Long id;
     private Long memberId;
     @Enumerated(EnumType.STRING)
     private RoomType type;
@@ -35,10 +36,10 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Furniture> furniture = new ArrayList<>();
 
-    public Room(Long roomId,
+    public Room(Long id,
          Long memberId,
          RoomType type) {
-        this.roomId = roomId;
+        this.id = id;
         this.memberId = memberId;
         this.type = type;
         this.validate();
@@ -58,7 +59,7 @@ public class Room {
     }
 
     private void validate() {
-        Assert.notNull(roomId, "'roomId' must not be null");
+        Assert.notNull(id, "'id' must not be null");
         Assert.notNull(memberId, "memberId");
         Assert.notNull(type, "'type' must not be null");
         if (type == RoomType.UNKNOWN) {

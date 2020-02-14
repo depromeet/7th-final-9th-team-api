@@ -1,13 +1,13 @@
 package com.depromeet.todo.presentation.tasks;
 
 import com.depromeet.todo.application.tasks.TasksApplicationService;
+import com.depromeet.todo.domain.task.Tasks;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -25,16 +25,17 @@ public class TasksController {
 
     @PostMapping("/furniture/{furnitureId}/task")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Long> createRoom(
+    public ApiResponse<TaskResponse> createTask(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long furnitureId,
             @RequestBody @Valid CreateTaskRequest createTaskRequest) {
 
-        long task = tasksApplicationService.createTask(memberId,
-                                                       furnitureId,
-                                                       createTaskRequest.getContents());
-        return ApiResponse.successFrom(task);
+        Tasks task = tasksApplicationService.createTask(memberId,
+                                                        furnitureId,
+                                                        createTaskRequest.getContents());
+        TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
+        return ApiResponse.successFrom(taskResponse);
     }
 
     @GetMapping("/tasks")
@@ -55,21 +56,20 @@ public class TasksController {
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long roomId) {
         List<TaskResponse> tasks = tasksApplicationService.getTasksByRoom(memberId, roomId)
-                                                            .stream()
-                                                            .map(taskResponseAssembler::toDisplayableTask)
-                                                            .collect(Collectors.toList());
+                                                          .stream()
+                                                          .map(taskResponseAssembler::toDisplayableTask)
+                                                          .collect(Collectors.toList());
         return ApiResponse.successFrom(tasks);
     }
 
-    @PostMapping("/tasks/{taskId}")
-    public ResponseEntity completeTask(
+    @PostMapping("/tasks/{taskId}/complete")
+    public ApiResponse<TaskResponse> completeTask(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long taskId) {
-        tasksApplicationService.completeTask(memberId, taskId);
-
-        return ResponseEntity.ok()
-                             .build();
+        Tasks task = tasksApplicationService.completeTask(memberId, taskId);
+        TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
+        return ApiResponse.successFrom(taskResponse);
     }
 }
 

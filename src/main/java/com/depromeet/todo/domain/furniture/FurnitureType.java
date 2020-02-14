@@ -15,6 +15,7 @@ public enum FurnitureType {
     UNKNOWN("");
 
     public static final Set<FurnitureType> AVAILABLE_SET = Arrays.stream(FurnitureType.values())
+                                                                 .filter(it -> !it.equals(UNKNOWN))
                                                                  .collect(Collectors.toSet());
 
     private final String name;

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@ToString(of = "id")
+@ToString(exclude = {"room", "tasks"})
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -24,8 +24,8 @@ public class Furniture {
 
     public static final int ORDER_OF_INCREASE = 1;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "furniture_id")
     private Long id;
     private Long memberId;
     @ManyToOne

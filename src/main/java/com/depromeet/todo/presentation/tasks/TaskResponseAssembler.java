@@ -13,11 +13,12 @@ public class TaskResponseAssembler implements DisplayableTaskAssembler {
             return null;
         }
         return TaskResponse.builder()
-                    .id(task.getId())
-                    .state(task.getState())
-                    .order(task.getOrdered())
-                    .deadline(task.getDeadline())
-                    .createdAt(task.getCreatedAt())
-                    .build();
+                           .id(task.getId())
+                           .furnitureType(task.getFurniture().getFurnitureType())
+                           .state(task.getState())
+                           .order(task.getDisplayOrder())
+                           .deadline(task.getDeadline())
+                           .createdAt(task.getCreatedAt())
+                           .build();
     }
 }

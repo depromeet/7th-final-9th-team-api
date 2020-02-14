@@ -43,7 +43,7 @@ public class RoomApplicationService {
         Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(roomId, "'roomId' must not be null");
 
-        return roomRepository.findByRoomIdAndMemberId(roomId, memberId)
+        return roomRepository.findByIdAndMemberId(roomId, memberId)
                                   .orElseThrow(() -> {
                                       log.warn("Room not found. roomId: {}, member: {}", roomId, memberId);
                                       return new ResourceNotFoundException("Room not found");

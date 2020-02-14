@@ -18,7 +18,7 @@ public class RoomResponseAssembler implements DisplayableRoomAssembler {
             return null;
         }
         RoomResponse roomResponse = new RoomResponse();
-        roomResponse.setId(room.getRoomId());
+        roomResponse.setId(room.getId());
         roomResponse.setType(room.getType().getName());
         roomResponse.setFurniture(furnitureResponseAssembler.toDisplayableFurniture(room.getFurniture()));
         roomResponse.setCreatedAt(room.getCreatedAt());
