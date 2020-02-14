@@ -1,6 +1,6 @@
 package com.depromeet.todo.domain.builder;
 
-import com.depromeet.todo.domain.HouseBuilder;
+import com.depromeet.todo.domain.HouseFactory;
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.room.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -22,19 +22,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureMockMvc
 @Transactional
 @SpringBootTest
-class HouseBuilderTest {
+class HouseFactoryTest {
 
-    private static final Logger log = LoggerFactory.getLogger(HouseBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(HouseFactory.class);
 
     @Autowired
-    private HouseBuilder houseBuilder;
+    private HouseFactory houseFactory;
     @Autowired
     private RoomRepository roomRepository;
 
     @DisplayName("해당 계정에 기본으로 제공하는 집을 짓는다")
     @Test
     void build() {
-        List<Room> rooms = houseBuilder.build(1L);
+        List<Room> rooms = houseFactory.build(1L);
         log.info("Furniture : {}", rooms.get(0).getFurniture());
 
 

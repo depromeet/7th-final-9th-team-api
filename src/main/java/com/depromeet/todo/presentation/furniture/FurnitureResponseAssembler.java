@@ -4,8 +4,12 @@ import com.depromeet.todo.application.furniture.DisplayableFurnitureAssembler;
 import com.depromeet.todo.domain.furniture.Furniture;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class FurnitureResponseAssembler implements DisplayableFurnitureAssembler {
+
     @Override
     public FurnitureResponse toDisplayableFurniture(Furniture furniture) {
         if (furniture == null) {
@@ -17,5 +21,11 @@ public class FurnitureResponseAssembler implements DisplayableFurnitureAssembler
         furnitureResponse.setCreatedAt(furniture.getCreatedAt());
         furnitureResponse.setUpdatedAt(furniture.getUpdatedAt());
         return furnitureResponse;
+    }
+
+    public List<FurnitureResponse> toDisplayableFurniture(List<Furniture> furnitures) {
+        return furnitures.stream()
+                .map(this::toDisplayableFurniture)
+                .collect(Collectors.toList());
     }
 }

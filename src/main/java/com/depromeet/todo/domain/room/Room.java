@@ -10,8 +10,8 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -32,7 +32,7 @@ public class Room {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Furniture> furniture = new ArrayList<>();
 
     public Room(Long roomId,
@@ -51,8 +51,10 @@ public class Room {
     }
 
     private void arrangeFurniture(Furniture furniture) {
-        furniture.addRoom(this);
         this.furniture.add(furniture);
+        if(!Objects.equals(furniture.getRoom(), this)){
+            furniture.addRoom(this);
+        }
     }
 
     private void validate() {

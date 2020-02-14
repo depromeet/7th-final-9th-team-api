@@ -90,5 +90,8 @@ public class Furniture {
 
     public void addRoom(Room room) {
         this.room = room;
+        if(!room.getFurniture().contains(this)){
+            room.getFurniture().add(this);
+        }
     }
 }
