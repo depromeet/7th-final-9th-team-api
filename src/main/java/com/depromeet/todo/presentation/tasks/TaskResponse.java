@@ -15,6 +15,7 @@ public class TaskResponse implements Displayable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     private String furnitureName;
+    private String contents;
     private Integer order;
     private TaskState state;
     private LocalDateTime deadline;
