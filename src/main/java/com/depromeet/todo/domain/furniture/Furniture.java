@@ -1,7 +1,7 @@
 package com.depromeet.todo.domain.furniture;
 
 import com.depromeet.todo.domain.room.Room;
-import com.depromeet.todo.domain.task.Tasks;
+import com.depromeet.todo.domain.task.Task;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -39,7 +39,7 @@ public class Furniture {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
-    private List<Tasks> tasks = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();
 
     private Furniture(Long memberId,
                       Room room,
@@ -81,11 +81,11 @@ public class Furniture {
         }
     }
 
-    public Tasks registerTask(Long memberId, String contents) {
+    public Task registerTask(Long memberId, String contents) {
         int order = this.tasks.size() + ORDER_OF_INCREASE;
-        Tasks tasks = Tasks.of(memberId, this, contents, order);
-        this.tasks.add(tasks);
-        return tasks;
+        Task task = Task.of(memberId, this, contents, order);
+        this.tasks.add(task);
+        return task;
     }
 
     public void addRoom(Room room) {

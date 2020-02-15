@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Tasks {
+public class Task {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
@@ -40,12 +40,12 @@ public class Tasks {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private Tasks(long memberId,
-                  Furniture furniture,
-                  TaskState state,
-                  String contents,
-                  Integer displayOrder,
-                  LocalDateTime deadline) {
+    private Task(long memberId,
+                 Furniture furniture,
+                 TaskState state,
+                 String contents,
+                 Integer displayOrder,
+                 LocalDateTime deadline) {
         this.memberId = memberId;
         this.furniture = furniture;
         this.state = state;
@@ -56,12 +56,12 @@ public class Tasks {
         this.updatedAt = null;
     }
 
-    public static Tasks of(long memberId,
-                           Furniture furniture,
-                           String contents,
-                           int displayOrder) {
+    public static Task of(long memberId,
+                          Furniture furniture,
+                          String contents,
+                          int displayOrder) {
         LocalDateTime deadline = LocalDate.now().atTime(LocalTime.MAX);
-        return new Tasks(memberId, furniture, TaskState.TODO, contents, displayOrder, deadline);
+        return new Task(memberId, furniture, TaskState.TODO, contents, displayOrder, deadline);
     }
 
     public void done() {
@@ -69,6 +69,6 @@ public class Tasks {
     }
 
     public boolean isTodo() {
-        return state == TaskState.TODO;
+        return state.isTodo();
     }
 }

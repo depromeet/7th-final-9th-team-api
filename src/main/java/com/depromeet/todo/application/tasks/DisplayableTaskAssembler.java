@@ -1,9 +1,9 @@
 package com.depromeet.todo.application.tasks;
 
 import com.depromeet.todo.application.Displayable;
-import com.depromeet.todo.domain.task.Tasks;
+import com.depromeet.todo.domain.task.Task;
 
 public interface DisplayableTaskAssembler {
 
-    Displayable toDisplayableTask(Tasks task);
+    Displayable toDisplayableTask(Task task);
 }

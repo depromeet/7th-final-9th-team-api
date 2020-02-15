@@ -25,12 +25,12 @@ class TaskRepositoryTest {
         Room room = Room.of(1L, 1L, RoomType.BEDROOM, Arrays.asList(furnitures));
         roomRepository.save(room);
 
-        Tasks task = Tasks.of(1L, furnitures,
+        Task task = Task.of(1L, furnitures,
                                   "잠자기", 0);
         taskRepository.save(task);
 
         LocalDateTime now = LocalDateTime.now();
-        List<Tasks> actual = taskRepository.findByStateAndDeadlineBefore(Tasks.TaskState.TODO, now);
+        List<Task> actual = taskRepository.findByStateAndDeadlineBefore(Task.TaskState.TODO, now);
         log.info("result : {} ", actual);
 
         assertThat(actual).hasSize(1);*/

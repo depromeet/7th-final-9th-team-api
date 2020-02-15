@@ -1,7 +1,6 @@
 package com.depromeet.todo.presentation.tasks;
 
 import com.depromeet.todo.application.Displayable;
-import com.depromeet.todo.domain.furniture.FurnitureType;
 import com.depromeet.todo.domain.task.TaskState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

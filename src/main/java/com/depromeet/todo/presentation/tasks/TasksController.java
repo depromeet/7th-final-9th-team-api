@@ -1,7 +1,7 @@
 package com.depromeet.todo.presentation.tasks;
 
 import com.depromeet.todo.application.tasks.TasksApplicationService;
-import com.depromeet.todo.domain.task.Tasks;
+import com.depromeet.todo.domain.task.Task;
 import com.depromeet.todo.presentation.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,9 +31,9 @@ public class TasksController {
             @PathVariable Long furnitureId,
             @RequestBody @Valid CreateTaskRequest createTaskRequest) {
 
-        Tasks task = tasksApplicationService.createTask(memberId,
-                                                        furnitureId,
-                                                        createTaskRequest.getContents());
+        Task task = tasksApplicationService.createTask(memberId,
+                                                       furnitureId,
+                                                       createTaskRequest.getContents());
         TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
         return ApiResponse.successFrom(taskResponse);
     }
@@ -67,7 +67,7 @@ public class TasksController {
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long taskId) {
-        Tasks task = tasksApplicationService.completeTask(memberId, taskId);
+        Task task = tasksApplicationService.completeTask(memberId, taskId);
         TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
         return ApiResponse.successFrom(taskResponse);
     }

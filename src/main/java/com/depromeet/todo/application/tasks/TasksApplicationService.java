@@ -6,8 +6,8 @@ import com.depromeet.todo.application.room.RoomApplicationService;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.room.Room;
+import com.depromeet.todo.domain.task.Task;
 import com.depromeet.todo.domain.task.TaskRepository;
-import com.depromeet.todo.domain.task.Tasks;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,18 +32,18 @@ public class TasksApplicationService {
     private final TaskRepository taskRepository;
 
     @Transactional
-    public Tasks createTask(Long memberId,
-                            Long furnitureId,
-                            String contents) {
+    public Task createTask(Long memberId,
+                           Long furnitureId,
+                           String contents) {
         memberApplicationService.getMember(memberId);
         Furniture furniture = furnitureApplicationService.getFurnitures(furnitureId);
 
-        Tasks task = furniture.registerTask(memberId, contents);
+        Task task = furniture.registerTask(memberId, contents);
         return taskRepository.save(task);
     }
 
     @Transactional(readOnly = true)
-    public Page<Tasks> getTasks(Long memberId, Pageable pageable) {
+    public Page<Task> getTasks(Long memberId, Pageable pageable) {
         Assert.notNull(memberId, "'memberId' must not be null");
         Assert.notNull(pageable, "'pageable' must not be null");
 
@@ -53,26 +53,26 @@ public class TasksApplicationService {
                                                                         pageable);
     }
 
-    public Tasks completeTask(Long memberId, Long taskId) {
-        Tasks task = taskRepository.findByIdAndMemberId(taskId, memberId)
-                                   .orElseThrow(() -> new NotFoundTaskException(taskId));
+    public Task completeTask(Long memberId, Long taskId) {
+        Task task = taskRepository.findByIdAndMemberId(taskId, memberId)
+                                  .orElseThrow(() -> new NotFoundTaskException(taskId));
         task.done();
         return task;
     }
 
-    public List<Tasks> changeCompleteTaskOverDeadline(LocalDateTime now) {
-        List<Tasks> tasks = taskRepository.findByStateAndDeadlineBefore(TODO, now);
-        tasks.forEach(Tasks::done);
+    public List<Task> changeCompleteTaskOverDeadline(LocalDateTime now) {
+        List<Task> tasks = taskRepository.findByStateAndDeadlineBefore(TODO, now);
+        tasks.forEach(Task::done);
         return tasks;
     }
 
-    public List<Tasks> getTasksByRoom(Long memberId, Long roomId) {
+    public List<Task> getTasksByRoom(Long memberId, Long roomId) {
         Room room = roomApplicationService.getRoom(memberId, roomId);
         return room.getFurniture()
                    .stream()
                    .flatMap(it -> it.getTasks()
                                     .stream())
-                   .filter(Tasks::isTodo)
+                   .filter(Task::isTodo)
                    .collect(Collectors.toList());
     }
 }

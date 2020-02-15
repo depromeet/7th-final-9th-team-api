@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface TaskRepository extends JpaRepository<Tasks, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Page<Tasks> findByMemberIdAndStateOrderByDisplayOrder(long memberId, TaskState state, Pageable pageable);
+    Page<Task> findByMemberIdAndStateOrderByDisplayOrder(long memberId, TaskState state, Pageable pageable);
 
-    Optional<Tasks> findByIdAndMemberId(long id, long memberId);
+    Optional<Task> findByIdAndMemberId(long id, long memberId);
 
-    List<Tasks> findByStateAndDeadlineBefore(TaskState state, LocalDateTime now);
+    List<Task> findByStateAndDeadlineBefore(TaskState state, LocalDateTime now);
 }
