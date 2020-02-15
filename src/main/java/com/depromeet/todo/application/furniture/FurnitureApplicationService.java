@@ -1,7 +1,6 @@
 package com.depromeet.todo.application.furniture;
 
 import com.depromeet.todo.application.ResourceNotFoundException;
-import com.depromeet.todo.domain.IdGenerator;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.furniture.FurnitureRepository;
 import com.depromeet.todo.domain.furniture.FurnitureType;
@@ -23,7 +22,6 @@ import org.springframework.util.Assert;
 public class FurnitureApplicationService {
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
-    private final IdGenerator idGenerator;
     private final FurnitureRepository furnitureRepository;
 
     @Transactional
@@ -35,7 +33,6 @@ public class FurnitureApplicationService {
         Member member = this.getMember(memberId);
         Room room = this.getRoom(member, roomId);
         Furniture furniture = Furniture.of(
-                idGenerator,
                 member.getMemberId(),
                 room,
                 furnitureType
@@ -46,7 +43,7 @@ public class FurnitureApplicationService {
     private Room getRoom(Member owner, Long roomId) {
         assert owner != null;
         assert roomId != null;
-        return roomRepository.findByRoomIdAndMemberId(roomId, owner.getMemberId())
+        return roomRepository.findByIdAndMemberId(roomId, owner.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("Room not found. roomId: {}, member: {}", roomId, owner);
                     return new ResourceNotFoundException("Room not found. roomId: " + roomId);
@@ -74,17 +71,22 @@ public class FurnitureApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Furniture getFurniture(Long memberId, Long roomId, Long furnitureId) {
-        Assert.notNull(memberId, "'memberId' must not be null");
-        Assert.notNull(roomId, "'roomId' must not be null");
+    public Furniture getFurnitures(Long furnitureId) {
         Assert.notNull(furnitureId, "'furnitureId' must not be null");
 
-        Member member = this.getMember(memberId);
-        Room room = this.getRoom(member, roomId);
-        return furnitureRepository.findByFurnitureIdAndMemberIdAndRoom(furnitureId, member.getMemberId(), room)
+        return furnitureRepository.findById(furnitureId)
                 .orElseThrow(() -> {
-                    log.warn("Furniture not found. furnitureId: {}, member: {}, room: {}", furnitureId, member, room);
+                    log.warn("Furniture not found. furnitureId: {}", furnitureId);
                     return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);
                 });
+    }
+
+    public void removeFurniture(Long memberId, Long furnitureId) {
+        Furniture furniture = furnitureRepository.findByIdAndMemberId(furnitureId, memberId)
+                                                 .orElseThrow(() -> new NotFoundFurnitureException(furnitureId));
+        if(!furniture.hasAuthority(memberId)){
+            throw new ForbiddenException();
+        }
+        furnitureRepository.delete(furniture);
     }
 }

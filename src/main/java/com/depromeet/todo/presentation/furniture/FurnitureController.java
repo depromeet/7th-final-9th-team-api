@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -20,7 +21,7 @@ public class FurnitureController {
     private final FurnitureApplicationService furnitureApplicationService;
     private final FurnitureResponseAssembler furnitureResponseAssembler;
 
-    @PostMapping("/rooms/{roomId}/furnitures")
+    @PostMapping("/rooms/{roomId}/furniture")
     public ApiResponse<FurnitureResponse> createFurniture(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
@@ -36,7 +37,7 @@ public class FurnitureController {
         return ApiResponse.successFrom(furnitureResponse);
     }
 
-    @GetMapping("/me/rooms/{roomId}/furnitures")
+    @GetMapping("/rooms/{roomId}/furnitures")
     public ApiResponse<FurnitureResponse> getFurnitures(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @RequestParam(defaultValue = "0") int page,
@@ -50,15 +51,14 @@ public class FurnitureController {
         return ApiResponse.successFrom(furniturePage);
     }
 
-    @GetMapping("/rooms/{roomId}/furnitures/{furnitureId}")
-    public ApiResponse<FurnitureResponse> getFurniture(
+    @DeleteMapping("/furniture/{furnitureId}")
+    public ResponseEntity removeFurniture(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
-            @PathVariable Long roomId,
-            @PathVariable Long furnitureId
+            @PathVariable Long furnitureId,
+            @ApiIgnore @PageableDefault(size = 20) Pageable pageable
     ) {
-        Furniture furniture = furnitureApplicationService.getFurniture(memberId, roomId, furnitureId);
-        FurnitureResponse furnitureResponse = furnitureResponseAssembler.toDisplayableFurniture(furniture);
-        return ApiResponse.successFrom(furnitureResponse);
+        furnitureApplicationService.removeFurniture(memberId, furnitureId);
+        return ResponseEntity.noContent().build();
     }
 }

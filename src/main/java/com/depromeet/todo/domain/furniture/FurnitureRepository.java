@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface FurnitureRepository extends JpaRepository<Furniture, Long> {
     Page<Furniture> findByMemberIdAndRoom(Long memberId, Room room, Pageable pageable);
 
-    Optional<Furniture> findByFurnitureIdAndMemberIdAndRoom(Long furnitureId, Long memberId, Room room);
+    Optional<Furniture> findByIdAndMemberId(Long id, Long memberId);
 }

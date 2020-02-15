@@ -3,6 +3,7 @@ package com.depromeet.todo.presentation.common;
 import com.depromeet.todo.presentation.furniture.FurnitureResponse;
 import com.depromeet.todo.presentation.member.MemberResponse;
 import com.depromeet.todo.presentation.room.RoomResponse;
+import com.depromeet.todo.presentation.tasks.TaskResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 
@@ -35,7 +36,10 @@ public interface ApiResponse<T> {
             return new SuccessSimpleResponse<>(data, "room");
         }
         if (data instanceof FurnitureResponse) {
-            return new SuccessSimpleResponse<>(data, "furniture");
+            return new SuccessSimpleResponse<>(data, "furnitures");
+        }
+        if (data instanceof TaskResponse) {
+            return new SuccessSimpleResponse<>(data, "task");
         }
         return new SuccessMapResponse<>(data);
     }

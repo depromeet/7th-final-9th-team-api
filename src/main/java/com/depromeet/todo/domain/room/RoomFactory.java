@@ -1,10 +1,12 @@
 package com.depromeet.todo.domain.room;
 
 import com.depromeet.todo.domain.IdGenerator;
+import com.depromeet.todo.domain.furniture.Furniture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class RoomFactory {
 
         return RoomType.AVAILABLE_TYPES.stream()
                 .filter(it -> !existTypes.contains(it))
-                .map(it -> this.createRoom(memberId, it))
+                .map(it -> createRoom(memberId, it))
                 .collect(Collectors.toList());
     }
 
@@ -41,11 +43,15 @@ public class RoomFactory {
                 memberId,
                 roomType
         );
-        roomRepository.save(room);
+        return roomRepository.save(room);
+    }
 
-        applicationEventPublisher.publishEvent(
-                RoomCreatedEvent.of(this, room.getRoomId())
-        );
-        return room;
+    @Transactional
+    public Room createRoom(Long memberId, RoomType roomType, List<Furniture> furnitures) {
+        Assert.notNull(memberId, "'memberId' must not be null");
+        Assert.notNull(roomType, "'roomType' must not be null");
+
+        Room room = Room.of(snowFlakeIdGenerator.generate(), memberId, roomType, furnitures);
+        return roomRepository.save(room);
     }
 }
