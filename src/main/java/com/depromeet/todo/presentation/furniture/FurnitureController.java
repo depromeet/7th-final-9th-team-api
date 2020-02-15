@@ -44,9 +44,7 @@ public class FurnitureController {
         return this.createFurniture(memberId, roomId, createFurnitureRequest);
     }
 
-    private ApiResponse<FurnitureResponse> createFurniture(
-            Long memberId, Long roomId, CreateFurnitureRequest createFurnitureRequest
-    ) {
+    private ApiResponse<FurnitureResponse> createFurniture(Long memberId, Long roomId, CreateFurnitureRequest createFurnitureRequest) {
         Furniture furniture = furnitureApplicationService.createFurniture(
                 memberId,
                 roomId,
