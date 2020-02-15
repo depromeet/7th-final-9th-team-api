@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -48,5 +49,16 @@ public class FurnitureController {
         Page<FurnitureResponse> furniturePage = furnitureApplicationService.getFurnitures(memberId, roomId, pageable)
                 .map(furnitureResponseAssembler::toDisplayableFurniture);
         return ApiResponse.successFrom(furniturePage);
+    }
+
+    @DeleteMapping("/furniture/{furnitureId}")
+    public ResponseEntity removeFurniture(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long furnitureId,
+            @ApiIgnore @PageableDefault(size = 20) Pageable pageable
+    ) {
+        furnitureApplicationService.removeFurniture(memberId, furnitureId);
+        return ResponseEntity.noContent().build();
     }
 }

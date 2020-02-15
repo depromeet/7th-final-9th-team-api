@@ -94,4 +94,8 @@ public class Furniture {
             room.getFurniture().add(this);
         }
     }
+
+    public boolean hasAuthority(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }

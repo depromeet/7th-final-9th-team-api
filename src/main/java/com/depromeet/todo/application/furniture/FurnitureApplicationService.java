@@ -80,4 +80,13 @@ public class FurnitureApplicationService {
                     return new ResourceNotFoundException("Furniture not found. furnitureId: " + furnitureId);
                 });
     }
+
+    public void removeFurniture(Long memberId, Long furnitureId) {
+        Furniture furniture = furnitureRepository.findByIdAndMemberId(furnitureId, memberId)
+                                                 .orElseThrow(() -> new NotFoundFurnitureException(furnitureId));
+        if(!furniture.hasAuthority(memberId)){
+            throw new ForbiddenException();
+        }
+        furnitureRepository.delete(furniture);
+    }
 }
