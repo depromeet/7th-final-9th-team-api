@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -21,13 +21,30 @@ public class FurnitureController {
     private final FurnitureApplicationService furnitureApplicationService;
     private final FurnitureResponseAssembler furnitureResponseAssembler;
 
+    @Deprecated
     @PostMapping("/rooms/{roomId}/furniture")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<FurnitureResponse> createFurnitureDeprecated(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long roomId,
+            @RequestBody @Valid CreateFurnitureRequest createFurnitureRequest
+    ) {
+        return this.createFurniture(memberId, roomId, createFurnitureRequest);
+    }
+
+    @PostMapping("/rooms/{roomId}/furnitures")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<FurnitureResponse> createFurniture(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
             @PathVariable Long roomId,
             @RequestBody @Valid CreateFurnitureRequest createFurnitureRequest
     ) {
+        return this.createFurniture(memberId, roomId, createFurnitureRequest);
+    }
+
+    private ApiResponse<FurnitureResponse> createFurniture(Long memberId, Long roomId, CreateFurnitureRequest createFurnitureRequest) {
         Furniture furniture = furnitureApplicationService.createFurniture(
                 memberId,
                 roomId,
@@ -51,14 +68,28 @@ public class FurnitureController {
         return ApiResponse.successFrom(furniturePage);
     }
 
+    @Deprecated
     @DeleteMapping("/furniture/{furnitureId}")
-    public ResponseEntity removeFurniture(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFurnitureDeprecated(
             @RequestHeader(required = false, name = "Authorization") String authorization,
             @ApiIgnore @ModelAttribute("memberId") Long memberId,
-            @PathVariable Long furnitureId,
-            @ApiIgnore @PageableDefault(size = 20) Pageable pageable
+            @PathVariable Long furnitureId
     ) {
+        this.removeFurniture(memberId, furnitureId);
+    }
+
+    @DeleteMapping("/furnitures/{furnitureId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFurniture(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long furnitureId
+    ) {
+        this.removeFurniture(memberId, furnitureId);
+    }
+
+    private void removeFurniture(Long memberId, Long furnitureId) {
         furnitureApplicationService.removeFurniture(memberId, furnitureId);
-        return ResponseEntity.noContent().build();
     }
 }
