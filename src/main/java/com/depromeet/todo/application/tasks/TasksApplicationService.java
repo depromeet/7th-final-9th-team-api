@@ -48,9 +48,7 @@ public class TasksApplicationService {
         Assert.notNull(pageable, "'pageable' must not be null");
 
         Member member = memberApplicationService.getMember(memberId);
-        return taskRepository.findByMemberIdAndStateOrderByDisplayOrder(member.getMemberId(),
-                                                                        TODO,
-                                                                        pageable);
+        return taskRepository.findByMemberIdOrderByDisplayOrder(member.getMemberId(), pageable);
     }
 
     public Task completeTask(Long memberId, Long taskId) {
@@ -72,7 +70,6 @@ public class TasksApplicationService {
                    .stream()
                    .flatMap(it -> it.getTasks()
                                     .stream())
-                   .filter(Task::isTodo)
                    .collect(Collectors.toList());
     }
 }
