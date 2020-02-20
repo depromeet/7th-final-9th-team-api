@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Page<Task> findByMemberIdAndStateOrderByDisplayOrder(long memberId, TaskState state, Pageable pageable);
+    Page<Task> findByMemberIdOrderByDisplayOrder(long memberId, Pageable pageable);
 
     Optional<Task> findByIdAndMemberId(long id, long memberId);
 
