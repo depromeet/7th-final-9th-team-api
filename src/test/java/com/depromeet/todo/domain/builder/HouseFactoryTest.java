@@ -40,7 +40,6 @@ class HouseFactoryTest {
         List<Room> rooms = houseFactory.build(memberCreatedEvent);
         log.info("Furniture : {}", rooms.get(0).getFurniture());
 
-
         Optional<Room> temp = roomRepository.findById(rooms.get(0)
                                                            .getId());
         assertThat(temp.get().getFurniture()).hasSize(5);

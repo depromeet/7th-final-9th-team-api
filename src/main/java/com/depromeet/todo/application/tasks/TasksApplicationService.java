@@ -60,6 +60,13 @@ public class TasksApplicationService {
         return task;
     }
 
+    public Task incompleteTask(Long memberId, Long taskId) {
+        Task task = taskRepository.findByIdAndMemberId(taskId, memberId)
+                                  .orElseThrow(() -> new NotFoundTaskException(taskId));
+        task.todo();
+        return task;
+    }
+
     public List<Task> changeCompleteTaskOverDeadline(LocalDateTime now) {
         List<Task> tasks = taskRepository.findByStateAndDeadlineBefore(TODO, now);
         tasks.forEach(Task::done);

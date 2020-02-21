@@ -65,7 +65,11 @@ public class Task {
     }
 
     public void done() {
-        state = TaskState.DONE;
+        this.state = state.done();
+    }
+
+    public void todo() {
+        this.state = state.todo();
     }
 
     public boolean isTodo() {

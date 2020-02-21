@@ -80,5 +80,15 @@ public class TasksController {
         TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
         return ApiResponse.successFrom(taskResponse);
     }
+
+    @PostMapping("/tasks/{taskId}/incomplete")
+    public ApiResponse<TaskResponse> incompleteTask(
+            @RequestHeader(required = false, name = "Authorization") String authorization,
+            @ApiIgnore @ModelAttribute("memberId") Long memberId,
+            @PathVariable Long taskId) {
+        Task task = tasksApplicationService.incompleteTask(memberId, taskId);
+        TaskResponse taskResponse = taskResponseAssembler.toDisplayableTask(task);
+        return ApiResponse.successFrom(taskResponse);
+    }
 }
 
