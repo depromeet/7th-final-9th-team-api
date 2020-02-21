@@ -6,8 +6,8 @@ import com.depromeet.todo.application.room.RoomApplicationService;
 import com.depromeet.todo.domain.furniture.Furniture;
 import com.depromeet.todo.domain.member.Member;
 import com.depromeet.todo.domain.room.Room;
-import com.depromeet.todo.domain.task.Task;
-import com.depromeet.todo.domain.task.TaskRepository;
+import com.depromeet.todo.domain.room.RoomRepository;
+import com.depromeet.todo.domain.task.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class TasksApplicationService {
     private final RoomApplicationService roomApplicationService;
     private final MemberApplicationService memberApplicationService;
     private final FurnitureApplicationService furnitureApplicationService;
+    private final RoomRepository roomRepository;
     private final TaskRepository taskRepository;
 
     @Transactional
@@ -71,5 +73,19 @@ public class TasksApplicationService {
                    .flatMap(it -> it.getTasks()
                                     .stream())
                    .collect(Collectors.toList());
+    }
+
+    public TaskResults getCountOfTask(Long memberId) {
+        List<Room> rooms = roomRepository.findByMemberId(memberId);
+
+        TaskResults taskResults = new TaskResults();
+        for (Room room : rooms) {
+            List<Task> tasks = room.getTasks();
+            List<TaskCount> taskCounts = Arrays.stream(TaskState.values())
+                                               .map(it -> new TaskCount(it, it.getTotalCount(tasks)))
+                                               .collect(Collectors.toList());
+            taskResults.add(room, taskCounts);
+        }
+        return taskResults;
     }
 }

@@ -71,4 +71,9 @@ public class Task {
     public boolean isTodo() {
         return state.isTodo();
     }
+
+
+    public boolean equalsTaskState(TaskState taskState) {
+        return state.equals(taskState);
+    }
 }

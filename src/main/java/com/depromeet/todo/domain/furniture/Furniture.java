@@ -2,6 +2,7 @@ package com.depromeet.todo.domain.furniture;
 
 import com.depromeet.todo.domain.room.Room;
 import com.depromeet.todo.domain.task.Task;
+import com.depromeet.todo.domain.task.TaskState;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -97,5 +98,15 @@ public class Furniture {
 
     public boolean hasAuthority(Long memberId) {
         return this.memberId.equals(memberId);
+    }
+
+    public List<Task> getTasks(TaskState taskState) {
+        return tasks.stream()
+             .filter(it -> it.equalsTaskState(taskState))
+             .collect(Collectors.toList());
+    }
+
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks);
     }
 }

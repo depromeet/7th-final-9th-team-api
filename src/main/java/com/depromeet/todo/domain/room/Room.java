@@ -1,6 +1,8 @@
 package com.depromeet.todo.domain.room;
 
 import com.depromeet.todo.domain.furniture.Furniture;
+import com.depromeet.todo.domain.task.Task;
+import com.depromeet.todo.domain.task.TaskState;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -37,8 +39,8 @@ public class Room {
     private List<Furniture> furniture = new ArrayList<>();
 
     public Room(Long id,
-         Long memberId,
-         RoomType type) {
+                Long memberId,
+                RoomType type) {
         this.id = id;
         this.memberId = memberId;
         this.type = type;
@@ -53,7 +55,7 @@ public class Room {
 
     private void arrangeFurniture(Furniture furniture) {
         this.furniture.add(furniture);
-        if(!Objects.equals(furniture.getRoom(), this)){
+        if (!Objects.equals(furniture.getRoom(), this)) {
             furniture.addRoom(this);
         }
     }
@@ -68,5 +70,19 @@ public class Room {
                                                             .collect(Collectors.joining(", ", "[", "]"));
             throw new IllegalRoomTypeException("'type' must not be UNKNOWN. Use " + availableTypes);
         }
+    }
+
+    public List<Task> getTasks(TaskState taskState) {
+        return furniture.stream()
+                        .flatMap(it -> it.getTasks(taskState)
+                                         .stream())
+                        .collect(Collectors.toList());
+    }
+
+    public List<Task> getTasks() {
+        return furniture.stream()
+                        .flatMap(it -> it.getTasks()
+                                         .stream())
+                        .collect(Collectors.toList());
     }
 }
