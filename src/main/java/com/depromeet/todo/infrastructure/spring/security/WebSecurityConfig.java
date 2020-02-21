@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(this.jsonAccessDeniedHandler());
 
         http.sessionManagement().disable();
+        http.rememberMe().disable();
 
         http.csrf().disable();
 
