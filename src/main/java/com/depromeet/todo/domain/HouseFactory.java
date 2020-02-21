@@ -49,8 +49,8 @@ public class HouseFactory {
     enum BasicItem {
         OPTION1(BEDROOM, BED, CLOSET, DESK, WASTE_BIN, DRESSING_TABLE),
         OPTION2(LIVING_ROOM),
-        OPTION3(KITCHEN),
-        OPTION4(BATHROOM);
+        OPTION3(KITCHEN, REFRIGERATOR, TABLE, GAS_STOVE, KITCHEN_SINK, KITCHEN_WASTE_BIN),
+        OPTION4(BATHROOM , TOILET, SHOWER_BOOTH, WASHING_MACHINE, BATHROOM_WASTE_BIN, BATHROOM_SINK);
 
         private RoomType roomType;
         private FurnitureType[] furnitureTypes;
